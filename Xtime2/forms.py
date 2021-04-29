@@ -132,7 +132,7 @@ class EditProfileForm(FlaskForm):
     username = StringField(u'用户名', validators=[DataRequired(), Length(1, 20)])
     phone = StringField(u'电话', validators=[Optional(), Regexp('1\d{10}')])   # 正则匹配
     # 示例：Gender = RadioField('Gender', choices=[('M', 'Male'), ('F', 'Female')])
-    gender = RadioField(u'性别', choices=[('M', 'male'), ('F', 'female')], validators=[Optional()])
+    gender = RadioField(u'性别', choices=[('M', 'male'), ('F', 'female'), ('N', 'none')], default='N', validators=[Optional()])
     # 日期字段datetime.date(year=2018, month=2, day=20)2018-02-20
     # 出生日期(文本输入框，必须输入是"年-月-日"格式的日期)
     # 注：测试前，Optional可能不起作用，去StackOverflow瞅瞅

@@ -70,6 +70,19 @@
 
     <!-- main部分 -->
     <div class="container">
+
+        <!-- flash提示信息 -->
+        <div class="msg toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+            {% for message in get_flashed_messages(with_categories=True) %}
+            <div class="alert alert-{{ message[0] }} alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message[1] }}
+            </div>
+            {% endfor %}
+        </div>
+
         <h2>个人设置</h2>
         <div class="row">
             <!-- left -->
@@ -162,8 +175,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-
                                     <!-- 个性签名signature -->
                                     <div class="form-group row">
                                         <label for="signature" class="col-4 col-form-label">个性签名</label>
@@ -185,26 +196,43 @@
                                         <label for="gender" class="col-4 col-form-label">性别</label>
                                         <div class="col-8">
                                             <!-- 男 -->
+                                            <!-- 关于error：Not a vaild choice
+                                            后端表单中的choices必须包含表单提交时当前option（比如下面是"M"）的选项 -->
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="exampleRadios"
-                                                    id="exampleRadios1" value="option1" checked>
-                                                <label class="form-check-label" for="exampleRadios1">
+                                                {% if current_user.gender == 1 %}
+                                                <input class="form-check-input" type="radio" name="gender"
+                                                    id="inlineRadio1" value="M" checked>
+                                                {% else %}
+                                                <input class="form-check-input" type="radio" name="gender"
+                                                    id="inlineRadio1" value="M">
+                                                {% endif %}
+                                                <label class="form-check-label" for="inlineRadio1">
                                                     男
                                                 </label>
                                             </div>
                                             <!-- 女 -->
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="exampleRadios"
-                                                    id="exampleRadios2" value="option2">
-                                                <label class="form-check-label" for="exampleRadios2">
+                                                {% if current_user.gender == 2 %}
+                                                <input class="form-check-input" type="radio" name="gender"
+                                                    id="inlineRadio2" value="F" checked>
+                                                {% else %}
+                                                <input class="form-check-input" type="radio" name="gender"
+                                                    id="inlineRadio2" value="F">
+                                                {% endif %}
+                                                <label class="form-check-label" for="inlineRadio2">
                                                     女
                                                 </label>
                                             </div>
                                             <!-- 其他 -->
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="exampleRadios"
-                                                    id="exampleRadios3" value="option3">
-                                                <label class="form-check-label" for="exampleRadios3">其他</label>
+                                                {% if current_user.gender == None %}
+                                                <input class="form-check-input" type="radio" name="gender"
+                                                    id="inlineRadio3" value="N" checked>
+                                                {% else %}
+                                                <input class="form-check-input" type="radio" name="gender"
+                                                    id="inlineRadio3" value="N">
+                                                {% endif %}
+                                                <label class="form-check-label" for="inlineRadio3">其他</label>
                                             </div>
                                             <div class="error">
                                                 {% for message in form.gender.errors %}
@@ -373,6 +401,12 @@
             // 显示字数
             $('#textarea-comment-tip').html('还能输入' + (1000 - len) + '个字符');
         });
+
+        // 页面渲染结束后立刻show flash提示信息
+        $(document).ready(function () {
+            $('.toast').toast('show');
+        });
+
 
     </script>
 

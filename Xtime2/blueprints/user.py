@@ -37,6 +37,12 @@ def edit_profile():
         current_user.birthday = form.birthday.data
         current_user.signature = form.signature.data
         current_user.introduction = form.introduction.data
+        if current_user.gender == 'M':  # 男
+            current_user.gender = 1
+        if current_user.gender == 'F':  # 女
+            current_user.gender = 2
+        if current_user.gender == 'N':  # 其他
+            current_user.gender = None
         db.session.commit()
         flash('个人资料已更新', 'success')
         return redirect(url_for('.profile', username=current_user.username))
