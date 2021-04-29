@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask_ckeditor import CKEditorField
+from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, TextAreaField, ValidationError, \
     HiddenField, BooleanField, PasswordField, RadioField, DateField
@@ -125,28 +126,43 @@ class EditProfileForm(FlaskForm):
     """
         个人中心编辑表单，包括了User实体所有可编辑的字段(id字段、name字段不可编辑)
         另：密码、邮箱等字段单独编辑
-
     """
-
     name = StringField(u'姓名', validators=[DataRequired(), Length(1, 20)])
     email = StringField(u'邮箱', validators=[DataRequired(), Length(1, 254), Email(u'邮箱格式不合法')])
     username = StringField(u'用户名', validators=[DataRequired(), Length(1, 20)])
-    phone = StringField(u'电话', validators=[DataRequired('请输入电话'), Regexp('1\d{10}')])   # 正则匹配
+    phone = StringField(u'电话', validators=[Optional(), Regexp('1\d{10}')])   # 正则匹配
     # 示例：Gender = RadioField('Gender', choices=[('M', 'Male'), ('F', 'Female')])
-    gender = RadioField(u'性别', choices=[('M', 'male'), ('F', 'female')])
+    gender = RadioField(u'性别', choices=[('M', 'male'), ('F', 'female')], validators=[Optional()])
     # 日期字段datetime.date(year=2018, month=2, day=20)2018-02-20
     # 出生日期(文本输入框，必须输入是"年-月-日"格式的日期)
-    birthday = DateField(label=u'出生日期', format='%Y-%m-%d', default=date(1999, 11, 24))
-    address = None  # 地址(暂时不用)
-    signature = StringField(u'个性签名', validators=[DataRequired(), Length(1, 50)])
-    introduction = TextAreaField(u'个人描述', validators=None)  # 还应该限制字数
+    # 注：测试前，Optional可能不起作用，去StackOverflow瞅瞅
+    birthday = DateField(label=u'出生日期', format='%Y-%m-%d', default=date(1999, 11, 24), validators=[Optional()])
+    # address = None  # 地址(暂时不用，还没找到比较方便实现的方法)
+    signature = StringField(u'个性签名(不多于50字)', validators=[Optional(), Length(0, 50)])
+    introduction = TextAreaField(u'个人描述', validators=[Optional(), Length(0, 1000)])  # 限制字数通过JS完成
+    submit = SubmitField(u'保存')
+
+    def validate_username(self, field):
+        if field.data != current_user.username and User.query.filter_by(username=field.data).first():
+            raise ValidationError('用户名已存在')
+
+
+class UploadAvatorForm(FlaskForm):
     # 用户头像，存储路径(表单用FileField字段，实现参考https://blog.csdn.net/liuredflash/article/details/79646678)
     photo = FileField(
-        label=u'头像',
+        label=u'用户头像',
         validators=[
             # 文件必须选择
-            FileRequired(),
+            FileRequired(u'文件未选择！'),
             # 指定文件上传的格式
             FileAllowed(upload_set=['png', 'jpg'], message='请上传图片')])
-    submit = SubmitField(u'注册')
+    # 关于文件上传：https://zhuanlan.zhihu.com/p/24423891
+    submit = SubmitField()
 
+
+class CropAvatorForm(FlaskForm):
+    x = HiddenField()
+    y = HiddenField()
+    w = HiddenField()
+    h = HiddenField()
+    submit = SubmitField('Crop and Update')

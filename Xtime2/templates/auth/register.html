@@ -15,15 +15,10 @@
     <link href="../../static/css/register.css" rel="stylesheet">
     <style>
         .error {
-            /* line-height: 30%;
-            float: left;
-            position: relative;
-            top: -8px; */
             float: left;
             position: relative;
             top: -21px;
             height: 0px;
-
         }
     </style>
 </head>
@@ -114,7 +109,7 @@
                         </div>
                         <div class="error">
                             {% for message in form.password.errors %}
-                            <small style="color: red;">{{ message }};&nbsp;</small>
+                            <small style="color: red;">{{ message }}</small>
                             {% endfor %}
                         </div>
                         <!-- 确认密码(Confirm Password) -->
@@ -126,7 +121,7 @@
                         </div>
                         <div class="error">
                             {% for message in form.confirm.errors %}
-                            <small style="color: red;">{{ message }};</small>
+                            <small style="color: red;">{{ message }}</small>
                             {% endfor %}
                         </div>
                         <div class="form-group">

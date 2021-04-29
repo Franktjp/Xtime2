@@ -31,5 +31,13 @@ def edit_profile():
     if form.validate_on_submit():
         current_user.name = form.name.data
         current_user.username = form.username.data
-
+        current_user.email = form.email.data
+        current_user.phone = form.phone.data
+        current_user.gender = form.gender.data
+        current_user.birthday = form.birthday.data
+        current_user.signature = form.signature.data
+        current_user.introduction = form.introduction.data
+        db.session.commit()
+        flash('个人资料已更新', 'success')
+        return redirect(url_for('.profile', username=current_user.username))
     return render_template('user/settings/edit_profile.html', form=form)

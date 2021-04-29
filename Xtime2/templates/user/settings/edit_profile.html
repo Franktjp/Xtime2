@@ -113,6 +113,12 @@
                                             <input id="username" name="username" placeholder="Username"
                                                 class="form-control here" required="required" type="text"
                                                 value="{{ current_user.username }}">
+                                            <div class="error">
+                                                {% for message in form.username.errors %}
+                                                <small style="color: red;">{{ message }}</small>
+                                                {% endfor %}
+                                            </div>
+
                                         </div>
                                     </div>
                                     <!-- 姓名 -->
@@ -121,15 +127,56 @@
                                         <div class="col-8">
                                             <input id="name" name="name" placeholder="name" class="form-control here"
                                                 type="text" value="{{ current_user.name }}">
+                                            <div class="error">
+                                                {% for message in form.name.errors %}
+                                                <small style="color: red;">{{ message }}</small>
+                                                {% endfor %}
+                                            </div>
+
                                         </div>
                                     </div>
+                                    <!-- 邮箱 -->
+                                    <div class="form-group row">
+                                        <label for="email" class="col-4 col-form-label">邮箱</label>
+                                        <div class="col-8">
+                                            <input id="email" name="email" placeholder="email" class="form-control here"
+                                                type="text" value="{{ current_user.email }}">
+                                            <div class="error">
+                                                {% for message in form.email.errors %}
+                                                <small style="color: red;">{{ message }}</small>
+                                                {% endfor %}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <!-- 电话 -->
+                                    <div class="form-group row">
+                                        <label for="phone" class="col-4 col-form-label">电话</label>
+                                        <div class="col-8">
+                                            <input id="phone" name="phone" placeholder="phone" class="form-control here"
+                                                type="text" value="{{ current_user.phone }}">
+                                            <div class="error">
+                                                {% for message in form.phone.errors %}
+                                                <small style="color: red;">{{ message }}</small>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                     <!-- 个性签名signature -->
                                     <div class="form-group row">
                                         <label for="signature" class="col-4 col-form-label">个性签名</label>
                                         <div class="col-8">
-                                            <input id="signature" name="signature" placeholder="signature"
+                                            <input id="signature" name="signature" placeholder="个性签名哦"
                                                 class="form-control here" type="text"
                                                 value="{{ current_user.signature }}">
+                                            <div class="error">
+                                                {% for message in form.signature.errors %}
+                                                <small style="color: red;">{{ message }}</small>
+                                                {% endfor %}
+                                            </div>
+
                                         </div>
                                     </div>
                                     <!-- 居住地址address(暂时没找到好的方法实现) -->
@@ -159,6 +206,11 @@
                                                     id="exampleRadios3" value="option3">
                                                 <label class="form-check-label" for="exampleRadios3">其他</label>
                                             </div>
+                                            <div class="error">
+                                                {% for message in form.gender.errors %}
+                                                <small style="color: red;">{{ message }}</small>
+                                                {% endfor %}
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- 出生日期birthday -->
@@ -168,6 +220,11 @@
                                             <input id="date" name="birthday" type="date" required
                                                 class="form-control here" min="1900-01-01" max="2030-01-01"
                                                 value="{{ current_user.birthday }}">
+                                            <div class="error">
+                                                {% for message in form.birthday.errors %}
+                                                <small style="color: red;">{{ message }}</small>
+                                                {% endfor %}
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- 个人介绍 -->
@@ -175,8 +232,14 @@
                                         <label for="introduction" class="col-4 col-form-label">个人介绍</label>
                                         <div class="col-8">
                                             <textarea id="introduction" name="introduction" cols="40" rows="4"
-                                                class="form-control"
-                                                value="aeruf">{{ current_user.introduction }}</textarea>
+                                                class="form-control" placeholder="自我介绍哦" style="resize: none;"
+                                                maxlength="1000">{{ current_user.introduction }}</textarea>
+                                            <span id='textarea-comment-tip'></span>
+                                            <div class="error">
+                                                {% for message in form.introduction.errors %}
+                                                <small style="color: red;">{{ message }}</small>
+                                                {% endfor %}
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- 保存/重置 -->
@@ -283,6 +346,34 @@
         $(function () {
             $("#datepicker").datepicker();
         });
+
+        // 限制textarea字数
+        var checkStrLength = function (str, maxLength) {
+            var maxLength = maxLength;
+            var result = 0;
+            if (str && str.length > maxLength) {
+                result = maxLength;
+            } else {
+                result = str.length;
+            }
+            return result;
+        };
+
+        // 监听字数输入，允许输入1000个字符
+        $('#introduction').on('input propertychange', function () {
+            // 获取输入内容
+            var userIntro = $(this).val();
+            //判断字数
+            var len;
+            if (userIntro) {
+                len = checkStrLength(userIntro, 1000);
+            } else {
+                len = 0;
+            }
+            // 显示字数
+            $('#textarea-comment-tip').html('还能输入' + (1000 - len) + '个字符');
+        });
+
     </script>
 
 
