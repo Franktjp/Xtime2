@@ -1,0 +1,69 @@
+<!-- 关于bootstrap-flask中的宏：https://bootstrap-flask.readthedocs.io/en/stable/macros.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}个人资料编辑 - Xtime时光网{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .header {
+        z-index: 5;
+        height: 300px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- main部分 -->
+<div class="container">
+    <!-- flash提示信息(toast is a bootstrap4.2+ jQuery plugin so...the delay is invalid) -->
+    <div class="msg toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000"
+        style="z-index: 4;">
+        {% for message in get_flashed_messages(with_categories=True) %}
+        <div class="alert alert-{{ message[0] }} alert-dismissible fade show">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message[1] }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 主要修改区域 -->
+    <h2>个人设置</h2>
+    <div class="row">
+        <!-- left -->
+        <div class="col-md-3 ">
+            <div class="list-group ">
+                <!-- <a href="#" class="list-group-item list-group-item-action active">编辑个人资料</a> -->
+                <a href="{{ url_for('user.edit_profile') }}" class="list-group-item list-group-item-action">编辑个人资料</a>
+                <a href="{{ url_for('user.change_avatar') }}" class="list-group-item list-group-item-action">修改头像</a>
+                <a href="#" class="list-group-item list-group-item-action">修改密码</a>
+                <a href="#" class="list-group-item list-group-item-action">修改邮箱</a>
+            </div>
+        </div>
+        <!-- right -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- <h4>基本信息</h4> -->
+                            <h4>
+                                {% block setting_title %}{% endblock %}
+                            </h4>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% block setting_content %}{% endblock %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

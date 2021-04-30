@@ -4,7 +4,7 @@ import os
 import sys
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-# print(basedir)
+# print(basedir)  # D:\W7\PyCharm\Xtime2
 
 # SQLite URI compatible
 WIN = sys.platform.startswith('win')
@@ -42,6 +42,9 @@ class BaseConfig(object):
 
     XTIME2_UPLOAD_PATH = os.path.join(basedir, 'uploads')
     XTIME2_ALLOWED_IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif']
+
+    AVATARS_SAVE_PATH = os.path.join(basedir, 'uploads')
+    AVATARS_CROP_BASE_WIDTH = 500       # 默认为500
 
 
 class DevelopmentConfig(BaseConfig):

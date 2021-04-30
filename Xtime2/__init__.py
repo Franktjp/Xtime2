@@ -15,7 +15,7 @@ from Xtime2.blueprints.auth import auth_bp
 from Xtime2.blueprints.main import main_bp
 from Xtime2.blueprints.user import user_bp
 from Xtime2.extensions import bootstrap, db, login_manager, csrf, ckeditor, \
-    mail, moment, toolbar, migrate
+    mail, moment, toolbar, migrate, avatars
 from Xtime2.models import Admin, User
 from Xtime2.settings import config
 
@@ -62,6 +62,7 @@ def register_extensions(app):
     moment.init_app(app)
     toolbar.init_app(app)
     migrate.init_app(app)
+    avatars.init_app(app)
 
 
 def register_blueprints(app):

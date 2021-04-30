@@ -1,417 +1,204 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+{% extends 'user/settings/base.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% block title %}Xtime时光网：让电影遇见生活{% endblock %}
 
-    <title>Xtime时光网：让电影遇见生活</title>
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_profile.css') }}">
+{% endblock %}
 
-    <!-- description : Define a description of your web page -->
-    <meta name="description" content="The profile page of Xtime Website!">
-    <meta name="author" content="Franktjp">
+{% block setting_title %}基本信息{% endblock %}
 
-    <link href="../../../static/bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../../static/css/index.css" rel="stylesheet">
-    <link href="../../../static/css/base.css" rel="stylesheet">
-    <link href="../../../static/css/profile.css" rel="stylesheet">
-    <link href="../../../static/css/edit_profile.css" rel="stylesheet">
-
-</head>
-
-<body>
-
-    <!-- header部分(导航栏) -->
-    <div class="container-fluid header" style="z-index: 5;height: 300px;">
-        <!-- 参考：[透明粘性导航栏](https://bootsnipp.com/snippets/kl8Q3) -->
-        <nav>
-            <div class="menu-icon">
-                <i class="fa fa-bars fa-2x"></i>
+{% block setting_content %}
+<!-- 个人信息表单 -->
+<form method="post">
+    {{ form.csrf_token() }}
+    <!-- 用户名 -->
+    <div class="form-group row">
+        <label for="username" class="col-4 col-form-label">用户名</label>
+        <div class="col-8">
+            <input id="username" name="username" placeholder="Username" class="form-control here" required="required"
+                type="text" value="{{ current_user.username }}">
+            <div class="error">
+                {% for message in form.username.errors %}
+                <small style="color: red;">{{ message }}</small>
+                {% endfor %}
             </div>
-            <div class="logo">
-                Xtime
-            </div>
-            <div class="menu">
-                <ul>
-                    <li><a href="{{ url_for('main.index') }}">首页</a></li>
-                    <li><a href="#">电影</a></li>
-                    <li><a href="#">影评</a></li>
-                    <li><a href="#">榜单</a></li>
-                    <li><a href="#">社区</a></li>
-                    <li>
-                        <form class="form-inline my-2 my-lg-0">
-                            <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                        </form>
-                    </li>
-                    {% if current_user.is_authenticated %}
-                    <li>
-                        <div class="dropdown show">
-                            <a class="dropdown-toggle" href="https://example.com" id="dropdownMenuLink"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                你好,{{ current_user.username}}
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item"
-                                    href="{{ url_for('user.profile', username=current_user.username) }}">个人中心</a>
-                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">登出</a>
-                            </div>
-                        </div>
-                    </li>
-                    <!-- <li><a href="{{ url_for('auth.logout') }}">登出</a></li> -->
-                    {% else %}
-                    <li><a href="{{ url_for('auth.login') }}">登录</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
-    </div>
 
-    <!-- main部分 -->
-    <div class="container">
-
-        <!-- flash提示信息 -->
-        <div class="msg toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
-            {% for message in get_flashed_messages(with_categories=True) %}
-            <div class="alert alert-{{ message[0] }} alert-dismissible fade show">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                {{ message[1] }}
-            </div>
-            {% endfor %}
         </div>
-
-        <h2>个人设置</h2>
-        <div class="row">
-            <!-- left -->
-            <div class="col-md-3 ">
-                <div class="list-group ">
-                    <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
-                    <a href="#" class="list-group-item list-group-item-action">User Management</a>
-                    <a href="#" class="list-group-item list-group-item-action">Used</a>
-                    <a href="#" class="list-group-item list-group-item-action">Enquiry</a>
-                    <a href="#" class="list-group-item list-group-item-action">Dealer</a>
-                    <a href="#" class="list-group-item list-group-item-action">Media</a>
-                    <a href="#" class="list-group-item list-group-item-action">Post</a>
-                    <a href="#" class="list-group-item list-group-item-action">Category</a>
-                    <a href="#" class="list-group-item list-group-item-action">New</a>
-                    <a href="#" class="list-group-item list-group-item-action">Comments</a>
-                    <a href="#" class="list-group-item list-group-item-action">Appearance</a>
-                    <a href="#" class="list-group-item list-group-item-action">Reports</a>
-                    <a href="#" class="list-group-item list-group-item-action">Settings</a>
-
-
-                </div>
+    </div>
+    <!-- 姓名 -->
+    <div class="form-group row">
+        <label for="name" class="col-4 col-form-label">姓名</label>
+        <div class="col-8">
+            <input id="name" name="name" placeholder="name" class="form-control here" type="text"
+                value="{{ current_user.name }}">
+            <div class="error">
+                {% for message in form.name.errors %}
+                <small style="color: red;">{{ message }}</small>
+                {% endfor %}
             </div>
-            <!-- right -->
-            <div class="col-md-9">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h4>基本信息</h4>
-                                <hr>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <form method="post">
-                                    {{ form.csrf_token() }}
-                                    <!-- 用户名 -->
-                                    <div class="form-group row">
-                                        <label for="username" class="col-4 col-form-label">用户名</label>
-                                        <div class="col-8">
-                                            <input id="username" name="username" placeholder="Username"
-                                                class="form-control here" required="required" type="text"
-                                                value="{{ current_user.username }}">
-                                            <div class="error">
-                                                {% for message in form.username.errors %}
-                                                <small style="color: red;">{{ message }}</small>
-                                                {% endfor %}
-                                            </div>
 
-                                        </div>
-                                    </div>
-                                    <!-- 姓名 -->
-                                    <div class="form-group row">
-                                        <label for="name" class="col-4 col-form-label">姓名</label>
-                                        <div class="col-8">
-                                            <input id="name" name="name" placeholder="name" class="form-control here"
-                                                type="text" value="{{ current_user.name }}">
-                                            <div class="error">
-                                                {% for message in form.name.errors %}
-                                                <small style="color: red;">{{ message }}</small>
-                                                {% endfor %}
-                                            </div>
+        </div>
+    </div>
+    <!-- 邮箱 -->
+    <div class="form-group row">
+        <label for="email" class="col-4 col-form-label">邮箱</label>
+        <div class="col-8">
+            <input id="email" name="email" placeholder="email" class="form-control here" type="text"
+                value="{{ current_user.email }}">
+            <div class="error">
+                {% for message in form.email.errors %}
+                <small style="color: red;">{{ message }}</small>
+                {% endfor %}
+            </div>
 
-                                        </div>
-                                    </div>
-                                    <!-- 邮箱 -->
-                                    <div class="form-group row">
-                                        <label for="email" class="col-4 col-form-label">邮箱</label>
-                                        <div class="col-8">
-                                            <input id="email" name="email" placeholder="email" class="form-control here"
-                                                type="text" value="{{ current_user.email }}">
-                                            <div class="error">
-                                                {% for message in form.email.errors %}
-                                                <small style="color: red;">{{ message }}</small>
-                                                {% endfor %}
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <!-- 电话 -->
-                                    <div class="form-group row">
-                                        <label for="phone" class="col-4 col-form-label">电话</label>
-                                        <div class="col-8">
-                                            <input id="phone" name="phone" placeholder="phone" class="form-control here"
-                                                type="text" value="{{ current_user.phone }}">
-                                            <div class="error">
-                                                {% for message in form.phone.errors %}
-                                                <small style="color: red;">{{ message }}</small>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- 个性签名signature -->
-                                    <div class="form-group row">
-                                        <label for="signature" class="col-4 col-form-label">个性签名</label>
-                                        <div class="col-8">
-                                            <input id="signature" name="signature" placeholder="个性签名哦"
-                                                class="form-control here" type="text"
-                                                value="{{ current_user.signature }}">
-                                            <div class="error">
-                                                {% for message in form.signature.errors %}
-                                                <small style="color: red;">{{ message }}</small>
-                                                {% endfor %}
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <!-- 居住地址address(暂时没找到好的方法实现) -->
-                                    <!-- 性别gender(3个input必须name相同) -->
-                                    <div class="form-group row">
-                                        <label for="gender" class="col-4 col-form-label">性别</label>
-                                        <div class="col-8">
-                                            <!-- 男 -->
-                                            <!-- 关于error：Not a vaild choice
-                                            后端表单中的choices必须包含表单提交时当前option（比如下面是"M"）的选项 -->
-                                            <div class="form-check form-check-inline">
-                                                {% if current_user.gender == 1 %}
-                                                <input class="form-check-input" type="radio" name="gender"
-                                                    id="inlineRadio1" value="M" checked>
-                                                {% else %}
-                                                <input class="form-check-input" type="radio" name="gender"
-                                                    id="inlineRadio1" value="M">
-                                                {% endif %}
-                                                <label class="form-check-label" for="inlineRadio1">
-                                                    男
-                                                </label>
-                                            </div>
-                                            <!-- 女 -->
-                                            <div class="form-check form-check-inline">
-                                                {% if current_user.gender == 2 %}
-                                                <input class="form-check-input" type="radio" name="gender"
-                                                    id="inlineRadio2" value="F" checked>
-                                                {% else %}
-                                                <input class="form-check-input" type="radio" name="gender"
-                                                    id="inlineRadio2" value="F">
-                                                {% endif %}
-                                                <label class="form-check-label" for="inlineRadio2">
-                                                    女
-                                                </label>
-                                            </div>
-                                            <!-- 其他 -->
-                                            <div class="form-check form-check-inline">
-                                                {% if current_user.gender == None %}
-                                                <input class="form-check-input" type="radio" name="gender"
-                                                    id="inlineRadio3" value="N" checked>
-                                                {% else %}
-                                                <input class="form-check-input" type="radio" name="gender"
-                                                    id="inlineRadio3" value="N">
-                                                {% endif %}
-                                                <label class="form-check-label" for="inlineRadio3">其他</label>
-                                            </div>
-                                            <div class="error">
-                                                {% for message in form.gender.errors %}
-                                                <small style="color: red;">{{ message }}</small>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- 出生日期birthday -->
-                                    <div class="form-group row">
-                                        <label for="date" class="col-4 col-form-label">出生日期</label>
-                                        <div class="col-8">
-                                            <input id="date" name="birthday" type="date" required
-                                                class="form-control here" min="1900-01-01" max="2030-01-01"
-                                                value="{{ current_user.birthday }}">
-                                            <div class="error">
-                                                {% for message in form.birthday.errors %}
-                                                <small style="color: red;">{{ message }}</small>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- 个人介绍 -->
-                                    <div class="form-group row">
-                                        <label for="introduction" class="col-4 col-form-label">个人介绍</label>
-                                        <div class="col-8">
-                                            <textarea id="introduction" name="introduction" cols="40" rows="4"
-                                                class="form-control" placeholder="自我介绍哦" style="resize: none;"
-                                                maxlength="1000">{{ current_user.introduction }}</textarea>
-                                            <span id='textarea-comment-tip'></span>
-                                            <div class="error">
-                                                {% for message in form.introduction.errors %}
-                                                <small style="color: red;">{{ message }}</small>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- 保存/重置 -->
-                                    <div class="form-group row">
-                                        <div class="offset-4 col-8">
-                                            <button name="submit" type="submit" class="btn btn-success"><i
-                                                    class="bi bi-save"></i>Save</button>
-                                            <button name="reset" type="reset" class="btn btn-secondary"
-                                                style="margin-left: 50px;"><strong><i
-                                                        class="bi bi-arrow-clockwise"></i></strong>Reset</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+        </div>
+    </div>
+    <!-- 电话 -->
+    <div class="form-group row">
+        <label for="phone" class="col-4 col-form-label">电话</label>
+        <div class="col-8">
+            <input id="phone" name="phone" placeholder="phone" class="form-control here" type="text"
+                value="{{ current_user.phone }}">
+            <div class="error">
+                {% for message in form.phone.errors %}
+                <small style="color: red;">{{ message }}</small>
+                {% endfor %}
             </div>
         </div>
     </div>
-
-    <!-- footer部分 -->
-    <div class="container-fluid footer">
-        <!-- footer上半部分 -->
-        <div class="container bottom_border">
-            <div class="row">
-                <div class=" col-sm-4 col-md col-sm-4  col-12 col">
-                    <h5 class="headin5_amrc col_white_amrc pt2">Xtime</h5>
-                    <!--headin5_amrc-->
-                    <!-- 网站描述信息 -->
-                    <p class="mb10">一个交互式影评系统，为广大电影爱好者和专业影评撰写者提供一个获取影片
-                        信息与高质量影评 、撰写影评与阅读影 评的非盈利交流分享平台，具有高度的人性化、
-                        个性化、专业化、专题化和小众化。</p>
-                    <!-- 地址 -->
-                    <!-- <p><i class="fa fa-location-arrow"></i> 9878/25 sec 9 rohini 35 </p> -->
-                    <!-- 电话(.fa-phone应该不是字体图标，因为是以类的形式指明) -->
-                    <p><i class="fa fa-phone"></i>电话: 86-19946255605 </p>
-                    <!-- 邮箱 -->
-                    <p><i class="fa fa fa-envelope"></i>QQ: 1115303890@qq.com </p>
-                </div>
-
-                <!-- 推荐 -->
-                <div class=" col-sm-4 col-md col-6 col" style="margin-left: 196px;">
-                    <h5 class="headin5_amrc col_white_amrc pt2">推荐</h5>
-                    <!--headin5_amrc-->
-                    <ul class="footer_ul_amrc">
-                        <li><a href="#">时光策划</a></li>
-                        <li><a href="#">新片预告</a></li>
-                        <li><a href="#">全球拾取</a></li>
-                        <li><a href="#">卡片大富翁</a></li>
-                        <li><a href="#">时光对话</a></li>
-                        <!-- <li><a href="#"></a></li> -->
-                    </ul>
-                    <!--footer_ul_amrc ends here-->
-                </div>
-
-                <!-- 关注我们 -->
-                <div class=" col-sm-4 col-md  col-6 col">
-                    <!-- Mtime此处的设计是一个链接，放的是图标而不是文字 -->
-                    <h5 class="headin5_amrc col_white_amrc pt2">关注我们</h5>
-                    <!--headin5_amrc-->
-                    <ul class="footer_ul_amrc">
-                        <li><a href="#">新浪微博</a></li>
-                        <li><a href="#">微信公众号</a></li>
-                        <li><a href="#">今日头条</a></li>
-                    </ul>
-                    <!--footer_ul_amrc ends here-->
-                </div>
+    <!-- 个性签名signature -->
+    <div class="form-group row">
+        <label for="signature" class="col-4 col-form-label">个性签名</label>
+        <div class="col-8">
+            <input id="signature" name="signature" placeholder="个性签名哦" class="form-control here" type="text"
+                value="{{ current_user.signature }}">
+            <div class="error">
+                {% for message in form.signature.errors %}
+                <small style="color: red;">{{ message }}</small>
+                {% endfor %}
             </div>
-        </div>
-        <!-- footer下半部分 -->
-        <div class="container">
-            <ul class="foote_bottom_ul_amrc">
-                <li><a href="{{ url_for('main.index') }}">首页</a></li>
-                <li><a href="#">电影</a></li>
-                <li><a href="#">影评</a></li>
-                <li><a href="#">榜单</a></li>
-                <li><a href="#">社区</a></li>
-                <li><a href="#">登录</a></li>
-            </ul>
-            <!--foote_bottom_ul_amrc ends here-->
-            <p class="text-center">Copyright @2021 | Designed by <a href="{{ url_for('main.index') }}">Xtime</a></p>
 
-            <ul class="social_footer_ul">
-                <!-- 注：字体图标需要先从外部引入 -->
-                <li><a href="#"><i class="bi bi-facebook"></i></a></li>
-                <li><a href="#"><i class="bi bi-twitter"></i></a></li>
-                <li><a href="#"><i class="bi bi-linkedin"></i></a></li>
-                <li><a href="#"><i class="bi bi-instagram"></i></a></li>
-            </ul>
-            <!--social_footer_ul ends here-->
         </div>
     </div>
+    <!-- 居住地址address(暂时没找到好的方法实现) -->
+    <!-- 性别gender(3个input必须name相同) -->
+    <div class="form-group row">
+        <label for="gender" class="col-4 col-form-label">性别</label>
+        <div class="col-8">
+            <!-- 男 -->
+            <!-- 关于error：Not a vaild choice
+            后端表单中的choices必须包含表单提交时当前option（比如下面是"M"）的选项 -->
+            <div class="form-check form-check-inline">
+                {% if current_user.gender == 1 %}
+                <input class="form-check-input" type="radio" name="gender" id="inlineRadio1" value="M" checked>
+                {% else %}
+                <input class="form-check-input" type="radio" name="gender" id="inlineRadio1" value="M">
+                {% endif %}
+                <label class="form-check-label" for="inlineRadio1">
+                    男
+                </label>
+            </div>
+            <!-- 女 -->
+            <div class="form-check form-check-inline">
+                {% if current_user.gender == 2 %}
+                <input class="form-check-input" type="radio" name="gender" id="inlineRadio2" value="F" checked>
+                {% else %}
+                <input class="form-check-input" type="radio" name="gender" id="inlineRadio2" value="F">
+                {% endif %}
+                <label class="form-check-label" for="inlineRadio2">
+                    女
+                </label>
+            </div>
+            <!-- 其他 -->
+            <div class="form-check form-check-inline">
+                {% if current_user.gender == None %}
+                <input class="form-check-input" type="radio" name="gender" id="inlineRadio3" value="N" checked>
+                {% else %}
+                <input class="form-check-input" type="radio" name="gender" id="inlineRadio3" value="N">
+                {% endif %}
+                <label class="form-check-label" for="inlineRadio3">其他</label>
+            </div>
+            <div class="error">
+                {% for message in form.gender.errors %}
+                <small style="color: red;">{{ message }}</small>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- 出生日期birthday -->
+    <div class="form-group row">
+        <label for="date" class="col-4 col-form-label">出生日期</label>
+        <div class="col-8">
+            <input id="date" name="birthday" type="date" required class="form-control here" min="1900-01-01"
+                max="2030-01-01" value="{{ current_user.birthday }}">
+            <div class="error">
+                {% for message in form.birthday.errors %}
+                <small style="color: red;">{{ message }}</small>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- 个人介绍 -->
+    <div class="form-group row">
+        <label for="introduction" class="col-4 col-form-label">个人介绍</label>
+        <div class="col-8">
+            <textarea id="introduction" name="introduction" cols="40" rows="4" class="form-control" placeholder="自我介绍哦"
+                style="resize: none;" maxlength="1000">{{ current_user.introduction }}</textarea>
+            <span id='textarea-comment-tip'></span>
+            <div class="error">
+                {% for message in form.introduction.errors %}
+                <small style="color: red;">{{ message }}</small>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- 保存/重置 -->
+    <div class="form-group row">
+        <div class="offset-4 col-8">
+            <button name="submit" type="submit" class="btn btn-success"><i class="bi bi-save"></i>Save</button>
+            <button name="reset" type="reset" class="btn btn-secondary" style="margin-left: 50px;"><strong><i
+                        class="bi bi-arrow-clockwise"></i></strong>Reset</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+    // 限制textarea字数
+    var checkStrLength = function (str, maxLength) {
+        var maxLength = maxLength;
+        var result = 0;
+        if (str && str.length > maxLength) {
+            result = maxLength;
+        } else {
+            result = str.length;
+        }
+        return result;
+    };
 
-    <!-- 引入tether.min.js，否则chrome控制台报错(虽然不知道该文件啥用) -->
-    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-    <script src="../../../static/bootstrap-4.0.0-dist/js/jquery.min.js"></script>
-    <script src="../../../static/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
-    <script src="../../../static/bootstrap-4.0.0-dist/js/popper.min.js"></script>
-    <script src="../../../static/js/base.js"></script>
-    <script>
-        $(function () {
-            $("#datepicker").datepicker();
-        });
+    // 监听字数输入，允许输入1000个字符
+    $('#introduction').on('input propertychange', function () {
+        // 获取输入内容
+        var userIntro = $(this).val();
+        //判断字数
+        var len;
+        if (userIntro) {
+            len = checkStrLength(userIntro, 1000);
+        } else {
+            len = 0;
+        }
+        // 显示字数
+        $('#textarea-comment-tip').html('还能输入' + (1000 - len) + '个字符');
+    });
 
-        // 限制textarea字数
-        var checkStrLength = function (str, maxLength) {
-            var maxLength = maxLength;
-            var result = 0;
-            if (str && str.length > maxLength) {
-                result = maxLength;
-            } else {
-                result = str.length;
-            }
-            return result;
-        };
-
-        // 监听字数输入，允许输入1000个字符
-        $('#introduction').on('input propertychange', function () {
-            // 获取输入内容
-            var userIntro = $(this).val();
-            //判断字数
-            var len;
-            if (userIntro) {
-                len = checkStrLength(userIntro, 1000);
-            } else {
-                len = 0;
-            }
-            // 显示字数
-            $('#textarea-comment-tip').html('还能输入' + (1000 - len) + '个字符');
-        });
-
-        // 页面渲染结束后立刻show flash提示信息
-        $(document).ready(function () {
-            $('.toast').toast('show');
-        });
-
-
-    </script>
-
-
-</body>
-
-
-</html>
+    // // 页面渲染结束后立刻show flash提示信息
+    // $(document).ready(function () {
+    //     $('.toast').toast('show');
+    // });
+</script>
+{% endblock %}

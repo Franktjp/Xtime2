@@ -125,7 +125,7 @@ class ResetPasswordForm(FlaskForm):
 class EditProfileForm(FlaskForm):
     """
         个人中心编辑表单，包括了User实体所有可编辑的字段(id字段、name字段不可编辑)
-        另：密码、邮箱等字段单独编辑
+        另：密码、邮箱、头像等字段单独编辑
     """
     name = StringField(u'姓名', validators=[DataRequired(), Length(1, 20)])
     email = StringField(u'邮箱', validators=[DataRequired(), Length(1, 254), Email(u'邮箱格式不合法')])
@@ -166,3 +166,9 @@ class CropAvatorForm(FlaskForm):
     w = HiddenField()
     h = HiddenField()
     submit = SubmitField('Crop and Update')
+
+
+
+
+# 其他：
+# 关于pycharm中折叠代码：CTRL + shift + '+'展开 / '-'折叠

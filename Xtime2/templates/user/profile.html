@@ -1,298 +1,162 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% block title %}Xtime时光网：让电影遇见生活{% endblock %}
 
-    <title>Xtime时光网：让电影遇见生活</title>
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<style>
+    /* 设置header高度和z-index  */
+    .header {
+        z-index: 5;
+        height: 300px;
+    }
+</style>
+{% endblock %}
 
-    <!-- description : Define a description of your web page -->
-    <meta name="description" content="The profile page of Xtime Website!">
-    <meta name="author" content="Franktjp">
-
-    <link href="../../static/bootstrap-4.0.0-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../static/css/index.css" rel="stylesheet">
-    <link href="../../static/css/base.css" rel="stylesheet">
-    <link href="../../static/css/profile.css" rel="stylesheet">
-
-    <!-- <link rel="import" href="_header.html"> -->
-
-</head>
-
-<body>
-
-    <!-- header部分(导航栏) -->
-    <div class="container-fluid header" style="z-index: 5;height: 300px;">
-        <!-- 参考：[透明粘性导航栏](https://bootsnipp.com/snippets/kl8Q3) -->
-        <nav>
-            <div class="menu-icon">
-                <i class="fa fa-bars fa-2x"></i>
-            </div>
-            <div class="logo">
-                Xtime
-            </div>
-            <div class="menu">
-                <ul>
-                    <li><a href="{{ url_for('main.index') }}">首页</a></li>
-                    <li><a href="#">电影</a></li>
-                    <li><a href="#">影评</a></li>
-                    <li><a href="#">榜单</a></li>
-                    <li><a href="#">社区</a></li>
-                    <li>
-                        <form class="form-inline my-2 my-lg-0">
-                            <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                        </form>
-                    </li>
-                    {% if current_user.is_authenticated %}
-                    <li>
-                        <div class="dropdown show">
-                            <a class="dropdown-toggle" href="https://example.com" id="dropdownMenuLink"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                你好,{{ current_user.username}}
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item"
-                                    href="{{ url_for('user.profile', username=current_user.username) }}">个人中心</a>
-                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">登出</a>
-                            </div>
-                        </div>
-                    </li>
-                    <!-- <li><a href="{{ url_for('auth.logout') }}">登出</a></li> -->
-                    {% else %}
-                    <li><a href="{{ url_for('auth.login') }}">登录</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
-    </div>
-
-    <!-- main部分(个人名片) -->
-    <div class="container emp-profile">
-        <form method="post">
-            {{ form.csrf_token() }}
-            <div class="row">
-                <!-- 头像 -->
-                <div class="col-md-4">
-                    <div class="profile-img">
-                        <img src="http://pic.616pic.com/ys_bnew_img/00/17/38/ez89bTi1r3.jpg" alt="" />
-                        <div class="file btn btn-lg btn-primary">
-                            修改图片
-                            <input type="file" name="file" />
-                        </div>
-                    </div>
-                </div>
-                <!-- 个人名片上部分 -->
-                <div class="col-md-6">
-                    <div class="profile-head">
-                        <h5> {{ current_user.username }} </h5>
-                        <h6>个性签名： {{ current_user.signature }} </h6>
-                        <!-- 为了好看 -->
-                        <p class="proile-rating"></p>
-                        <!-- <p class="proile-rating">RANKINGS : <span>8/10</span></p> -->
-                        <!-- 两个下拉框 -->
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                                    aria-controls="home" aria-selected="true">关于我</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab"
-                                    aria-controls="profile" aria-selected="false">我的影评</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- 编辑个人资料submit按钮 -->
-                <div class="col-md-2">
-                    <input type="submit" class="profile-edit-btn" name="btnAddMore" value="编辑个人资料" />
-                </div>
-            </div>
-
-            <div class="row">
-                <!-- 左边部分，还没想好怎么改 -->
-                <div class="col-md-4">
-                    <div class="profile-work">
-                        <p>WORK LINK</p>
-                        <a href="">Website Link</a><br />
-                        <a href="">Bootsnipp Profile</a><br />
-                        <a href="">Bootply Profile</a>
-                        <p>SKILLS</p>
-                        <a href="">Web Designer</a><br />
-                        <a href="">Web Developer</a><br />
-                        <a href="">WordPress</a><br />
-                        <a href="">WooCommerce</a><br />
-                        <a href="">PHP, .Net</a><br />
-                    </div>
-                </div>
-                <!-- 右边部分(关于我/我的影评) -->
-                <div class="col-md-8">
-                    <div class="tab-content profile-tab" id="myTabContent">
-                        <!-- home -->
-                        <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-                            <div class="row">
-                            </div>
-                        </div>
-                        <!-- profile -->
-                        <div class="tab-pane fade show active" id="profile" role="tabpanel"
-                            aria-labelledby="profile-tab">
-                            <!-- 用户名 -->
-                            <div class="row">
-                                <div class="col-md-6"> <label>用户名</label> </div>
-                                <div class="col-md-6">
-                                    <p>{{ current_user.username }}</p>
-                                </div>
-                            </div>
-                            <!-- 姓名 -->
-                            <div class="row">
-                                <div class="col-md-6"> <label>姓名</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>{{ current_user.name }}</p>
-                                </div>
-                            </div>
-                            <!-- Email -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Email</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>{{ current_user.email }}</p>
-                                </div>
-                            </div>
-                            <!-- 电话 -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>电话</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>{{ current_user.phone }}</p>
-                                </div>
-                            </div>
-                            <!-- 性别 -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>性别</label>
-                                </div>
-                                <div class="col-md-6">
-                                    {% if current_user.gender == 1 %}
-                                    <p>男</p>
-                                    {% elif current_user.gender == 2 %}
-                                    <p>女</p>
-                                    {% else %}
-                                    <p>不男不女</p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <!-- 年龄 -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>年龄</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>199</p>
-                                </div>
-                            </div>
-                            <!-- 个人介绍 -->
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label>个人介绍：</label>
-                                    <p>{{ current_user.introduction }}</p>
-                                </div>
-                            </div>
-                        </div>
-
+{% block content %}
+<!-- main部分(个人名片) -->
+<div class="container emp-profile">
+    <form method="post">
+        {{ form.csrf_token() }}
+        <div class="row">
+            <!-- 头像 -->
+            <div class="col-md-4">
+                <div class="profile-img">
+                    <img src="http://pic.616pic.com/ys_bnew_img/00/17/38/ez89bTi1r3.jpg" alt="" />
+                    <div class="file btn btn-lg btn-primary">
+                        修改图片
+                        <input type="file" name="file" />
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
-
-
-    <!-- footer部分 -->
-    <div class="container-fluid footer">
-        <!-- footer上半部分 -->
-        <div class="container bottom_border">
-            <div class="row">
-                <div class=" col-sm-4 col-md col-sm-4  col-12 col">
-                    <h5 class="headin5_amrc col_white_amrc pt2">Xtime</h5>
-                    <!--headin5_amrc-->
-                    <!-- 网站描述信息 -->
-                    <p class="mb10">一个交互式影评系统，为广大电影爱好者和专业影评撰写者提供一个获取影片
-                        信息与高质量影评 、撰写影评与阅读影 评的非盈利交流分享平台，具有高度的人性化、
-                        个性化、专业化、专题化和小众化。</p>
-                    <!-- 地址 -->
-                    <!-- <p><i class="fa fa-location-arrow"></i> 9878/25 sec 9 rohini 35 </p> -->
-                    <!-- 电话(.fa-phone应该不是字体图标，因为是以类的形式指明) -->
-                    <p><i class="fa fa-phone"></i>电话: 86-19946255605 </p>
-                    <!-- 邮箱 -->
-                    <p><i class="fa fa fa-envelope"></i>QQ: 1115303890@qq.com </p>
-                </div>
-
-                <!-- 推荐 -->
-                <div class=" col-sm-4 col-md col-6 col" style="margin-left: 196px;">
-                    <h5 class="headin5_amrc col_white_amrc pt2">推荐</h5>
-                    <!--headin5_amrc-->
-                    <ul class="footer_ul_amrc">
-                        <li><a href="#">时光策划</a></li>
-                        <li><a href="#">新片预告</a></li>
-                        <li><a href="#">全球拾取</a></li>
-                        <li><a href="#">卡片大富翁</a></li>
-                        <li><a href="#">时光对话</a></li>
-                        <!-- <li><a href="#"></a></li> -->
+            <!-- 个人名片上部分 -->
+            <div class="col-md-6">
+                <div class="profile-head">
+                    <h5> {{ current_user.username }} </h5>
+                    <h6>个性签名： {{ current_user.signature }} </h6>
+                    <!-- 为了好看 -->
+                    <p class="proile-rating"></p>
+                    <!-- <p class="proile-rating">RANKINGS : <span>8/10</span></p> -->
+                    <!-- 两个下拉框 -->
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                aria-controls="home" aria-selected="true">关于我</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                aria-controls="profile" aria-selected="false">我的影评</a>
+                        </li>
                     </ul>
-                    <!--footer_ul_amrc ends here-->
                 </div>
+            </div>
+            <!-- 编辑个人资料submit按钮 -->
+            <div class="col-md-2">
+                <input type="submit" class="profile-edit-btn" name="btnAddMore" value="编辑个人资料" />
+            </div>
+        </div>
 
-                <!-- 关注我们 -->
-                <div class=" col-sm-4 col-md  col-6 col">
-                    <!-- Mtime此处的设计是一个链接，放的是图标而不是文字 -->
-                    <h5 class="headin5_amrc col_white_amrc pt2">关注我们</h5>
-                    <!--headin5_amrc-->
-                    <ul class="footer_ul_amrc">
-                        <li><a href="#">新浪微博</a></li>
-                        <li><a href="#">微信公众号</a></li>
-                        <li><a href="#">今日头条</a></li>
-                    </ul>
-                    <!--footer_ul_amrc ends here-->
+        <div class="row">
+            <!-- 左边部分，还没想好怎么改 -->
+            <div class="col-md-4">
+                <div class="profile-work">
+                    <p>FEATURES</p>
+                    <a href="{{ url_for('user.change_avatar') }}">修改头像</a><br />
+                    <a href="">Website Link</a><br />
+                    <a href="">Bootsnipp Profile</a><br />
+                    <a href="">Bootply Profile</a>
+                    <p>SKILLS</p>
+                    <a href="">Web Designer</a><br />
+                    <a href="">Web Developer</a><br />
+                    <a href="">WordPress</a><br />
+                    <a href="">WooCommerce</a><br />
+                    <a href="">PHP, .Net</a><br />
+                </div>
+            </div>
+            <!-- 右边部分(关于我/我的影评) -->
+            <div class="col-md-8">
+                <div class="tab-content profile-tab" id="myTabContent">
+                    <!-- home -->
+                    <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row">
+                        </div>
+                    </div>
+                    <!-- profile -->
+                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <!-- 用户名 -->
+                        <div class="row">
+                            <div class="col-md-6"> <label>用户名</label> </div>
+                            <div class="col-md-6">
+                                <p>{{ current_user.username }}</p>
+                            </div>
+                        </div>
+                        <!-- 姓名 -->
+                        <div class="row">
+                            <div class="col-md-6"> <label>姓名</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ current_user.name }}</p>
+                            </div>
+                        </div>
+                        <!-- Email -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ current_user.email }}</p>
+                            </div>
+                        </div>
+                        <!-- 电话 -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>电话</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ current_user.phone }}</p>
+                            </div>
+                        </div>
+                        <!-- 性别 -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>性别</label>
+                            </div>
+                            <div class="col-md-6">
+                                {% if current_user.gender == 1 %}
+                                <p>男</p>
+                                {% elif current_user.gender == 2 %}
+                                <p>女</p>
+                                {% else %}
+                                <p>不男不女</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- 年龄 -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>年龄</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>199</p>
+                            </div>
+                        </div>
+                        <!-- 个人介绍 -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>个人介绍：</label>
+                                <p>{{ current_user.introduction }}</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-        <!-- footer下半部分 -->
-        <div class="container">
-            <ul class="foote_bottom_ul_amrc">
-                <li><a href="{{ url_for('main.index') }}">首页</a></li>
-                <li><a href="#">电影</a></li>
-                <li><a href="#">影评</a></li>
-                <li><a href="#">榜单</a></li>
-                <li><a href="#">社区</a></li>
-                <li><a href="#">登录</a></li>
-            </ul>
-            <!--foote_bottom_ul_amrc ends here-->
-            <p class="text-center">Copyright @2021 | Designed by <a href="{{ url_for('main.index') }}">Xtime</a></p>
+    </form>
+</div>
+{% endblock %}
 
-            <ul class="social_footer_ul">
-                <!-- 注：字体图标需要先从外部引入 -->
-                <li><a href="#"><i class="bi bi-facebook"></i></a></li>
-                <li><a href="#"><i class="bi bi-twitter"></i></a></li>
-                <li><a href="#"><i class="bi bi-linkedin"></i></a></li>
-                <li><a href="#"><i class="bi bi-instagram"></i></a></li>
-            </ul>
-            <!--social_footer_ul ends here-->
-        </div>
-    </div>
-
-
-    <!-- 引入tether.min.js，否则chrome控制台报错(虽然不知道该文件啥用) -->
-    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-    <script src="../../static/bootstrap-4.0.0-dist/js/jquery.min.js"></script>
-    <script src="../../static/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
-    <script src="../../static/bootstrap-4.0.0-dist/js/popper.min.js"></script>
-    <script src="../../static/js/base.js"></script>
-
-</body>
-
-
-</html>
+{% block scripts %}
+{{ super() }}
+{% endblock %}

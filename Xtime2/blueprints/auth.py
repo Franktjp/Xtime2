@@ -24,7 +24,7 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        remember = form.remember.data
+        remember = form.remember.data   # bool类型，通过浏览器cookie实现记住登录的用户信息
         user = User.query.filter_by(username=username).first()
         if user:
             if user.validate_password(password):

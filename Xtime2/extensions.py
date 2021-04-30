@@ -11,6 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
+from flask_avatars import Avatars
 
 bootstrap = Bootstrap()
 db = SQLAlchemy()
@@ -21,6 +22,7 @@ mail = Mail()
 moment = Moment()
 toolbar = DebugToolbarExtension()
 migrate = Migrate()
+avatars = Avatars() # 用户头像相关
 
 
 @login_manager.user_loader

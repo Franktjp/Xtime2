@@ -50,6 +50,11 @@ class User(db.Model, UserMixin):
     photo = db.Column(db.String(64), default='default_icon.jpg')
     # privilege = None                      # 用户权限(该字段暂时先不考虑，管理员与普通用户应该独立)
 
+    avatar_s = db.Column(db.String(64))
+    avatar_m = db.Column(db.String(64))
+    avatar_l = db.Column(db.String(64))
+    avatar_raw = db.Column(db.String(64))
+
     def set_password(self, password):
         """用来设置密码的方法，接受密码作为参数"""
         self.password_hash = generate_password_hash(password)   # 将生成的密码保持到对应字段
