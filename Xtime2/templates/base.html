@@ -4,23 +4,27 @@
 
 <head>
     {% block head %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}{% endblock title %}</title>
-    <!-- description : Define a description of your web page -->
-    <meta name="description" content="Welcome to Xtime!">
-    <meta name="author" content="Franktjp">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}{% endblock title %}</title>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/xtime_favicon.ico') }}">
+        <!-- description : Define a description of your web page -->
+        <meta name="description" content="Welcome to Xtime!">
+        <meta name="author" content="Franktjp">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.0.0-dist/css/bootstrap.min.css') }}"
-        type="text/css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.0.0-dist/css/bootstrap.min.css') }}"
+              type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" type="text/css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/toastr.css') }}" type="text/css">
+        <script type="text/javascript" src="{{ url_for('static', filename='bootstrap-4.0.0-dist/js/jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/toastr.js') }}"></script>
 
     {% endblock head %}
 </head>
 
 <body>
-    {% block nav %}
+{% block nav %}
     <!-- header部分(导航栏) -->
     <div class="container-fluid header" style="z-index: 5;">
         <!-- 参考：[透明粘性导航栏](https://bootsnipp.com/snippets/kl8Q3) -->
@@ -40,42 +44,50 @@
                     <li><a href="#">社区</a></li>
                     <li>
                         <form class="form-inline my-2 my-lg-0">
-                            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                            <input class="form-control mr-sm-2" type="text" placeholder="搜索电影、影人、文章">
                             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                         </form>
                     </li>
                     {% if current_user.is_authenticated %}
-                    <li>
-                        <div class="dropdown show">
-                            <a class="dropdown-toggle" href="https://example.com" id="dropdownMenuLink"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                你好,{{ current_user.username}}
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item"
-                                    href="{{ url_for('user.profile', username=current_user.username) }}">个人中心</a>
-                                <a class="dropdown-item" href="{{ url_for('user.edit_profile') }}">设置</a>
-                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">登出</a>
+                        <li>
+                            <div class="dropdown show">
+                                <a class="dropdown-toggle" href="https://example.com" id="dropdownMenuLink"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    你好,{{ current_user.username }}
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item"
+                                       href="{{ url_for('user.profile', username=current_user.username) }}">个人中心</a>
+                                    <a class="dropdown-item" href="{{ url_for('user.edit_profile') }}">设置</a>
+                                    <a class="dropdown-item" href="{{ url_for('auth.logout') }}">登出</a>
+                                </div>
                             </div>
-                        </div>
-                    </li>
-                    <!-- <li><a href="{{ url_for('auth.logout') }}">登出</a></li> -->
+                        </li>
                     {% else %}
-                    <li><a href="{{ url_for('auth.login') }}">登录</a></li>
+                        <li><a href="{{ url_for('auth.login') }}">登录</a></li>
                     {% endif %}
                 </ul>
             </div>
         </nav>
     </div>
-    {% endblock nav %}
+{% endblock nav %}
 
 
-    {% block content %}
-    <div class="container"></div>
-    {% endblock content %}
+<div class="container">
+    {% for message in get_flashed_messages(with_categories=True) %}
+        <script type="text/javascript">
+            // 注：message[0]和message[1]不能在js中直接使用，先用变量存储为string类型
+            var message = ['{{ message[0] }}', '{{ message[1] }}'];
+            // 调用toastr方法
+            toastr[message[0]](message[1]);
+        </script>
+    {% endfor %}
+</div>
 
+{% block content %}
+{% endblock content %}
 
-    {% block footer %}
+{% block footer %}
     <!-- footer部分 -->
     <div class="container-fluid footer">
         <!-- footer上半部分 -->
@@ -148,20 +160,23 @@
             <!--social_footer_ul ends here-->
         </div>
     </div>
-    {% endblock footer %}
+{% endblock footer %}
 
 
-    {% block scripts %}
+
+
+{% block scripts %}
     <!-- 引入tether.min.js，否则chrome控制台报错(虽然不知道该文件啥用) -->
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    {#    <script type="text/javascript"#}
+    {#            src="{{ url_for('static', filename='bootstrap-4.0.0-dist/js/jquery.min.js') }}"></script>#}
     <script type="text/javascript"
-        src="{{ url_for('static', filename='bootstrap-4.0.0-dist/js/jquery.min.js') }}"></script>
+            src="{{ url_for('static', filename='bootstrap-4.0.0-dist/js/bootstrap.min.js') }}"></script>
     <script type="text/javascript"
-        src="{{ url_for('static', filename='bootstrap-4.0.0-dist/js/bootstrap.min.js') }}"></script>
-    <script type="text/javascript"
-        src="{{ url_for('static', filename='bootstrap-4.0.0-dist/js/popper.min.js') }}"></script>
+            src="{{ url_for('static', filename='bootstrap-4.0.0-dist/js/popper.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
-    {% endblock %}
+    {#    <script type="text/javascript" src="{{ url_for('static', filename='js/toastr.js') }}"></script>#}
+{% endblock %}
 </body>
 
 </html>
