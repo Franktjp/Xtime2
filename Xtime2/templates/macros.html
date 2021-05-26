@@ -1,0 +1,112 @@
+{# movieCard的宏：一部影片的缩略图  #}
+{% macro movieCard(thumbnail,title,rating,id) %}
+    {#    id        : 影片id，跳转到影片详情页面 #}
+    {#    thumbnail : 影片封面图 #}
+    {#    title     : 影片标题 #}
+    {#    rating    : 影片评分 #}
+    <div class="card">
+        <a href={{ url_for('main.get_movie', movie_id=id) }} target="_blank">
+            <img class="card-img-top" alt="{{ title }}" src="{{ thumbnail }}">
+            <em class="icohot"></em>
+            <i class="moviegrade">{{ rating }}</i>
+        </a>
+        <h5 class="card-title">
+            <a href={{ id }} target="_blank">{{ title }}</a>
+        </h5>
+    </div>
+{% endmacro %}
+
+
+{# movieList的宏：一行影片缩略图-#}
+{% macro movieList(module_title, cards, show_num, category=category) %}
+    {#    module_title      : 影片类型标题，电影/电视剧...#}
+    {#    cards             : 传入的n个影片 #}
+    {#    category          : 影片类型，用int类型区分#}
+    {#    show_num          : 要展示的影片缩略图数量#}
+
+    {#            <span class="module-title">{{ module_title }}</span>#}
+    {#            <a href="{{ url_for("main.item_list",category=category) }}" class="more-btn">更多</a>#}
+    <!-- 影片缩略图：一共6个缩略图 -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                {% set len = (show_num|int) %}
+                {% for card in cards[0: len] %}
+                    <div class="col-md-2">
+                        {#                        {{ cardGroup(card.thumbnail, card.title, card.rating, card.id) }}#}
+                        {{ movieCard(card.thumbnail, card.title, card.rating, card.id) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+
+
+{# reviewCard的宏：一个影评的缩略图  #}
+{% macro reviewCard(thumbnail,title,rating, author,id="#") %}
+    {#    thumbnail : 影片封面图 #}
+    {#    title     : 影片标题 #}
+    {#    rating    : 影片评分 #}
+    {#    author    : 作者(包括用户名、其个人中心链接) #}
+    {#    review_detail : 影评内容 #}
+    {#    id        : 影评id，跳转到影评详情页面。调用方式为url_for('review', url=id) #}
+    <div class="col-md-6" style="padding-right: 0px;">
+        <div class="card commentsmod">
+            <!-- 热门影评相关的影片图片 -->
+            <a href="#" target="_blank">
+                <img src="{{thumbnail}}" title="{{ title }}" alt="{{title}}" width="105px"
+                     height="130px">
+            </a>
+            <!-- 热门影评首段 + 影片具体信息 -->
+            <div class="col-md-8">
+                <div class="card-block" style="padding: 0px;padding-top: 5px;">
+                    <a class="describe" href="{{ id }}">
+                        <i></i>
+                        这部剧场版还真的是冲着东京奥运会去的，奥运会延期一年，这片儿也跟着跑路，非要在奥运会正式开幕之前，去折腾一下奥运会主场馆。然而本以为这一次会让大艺术家迪达拉看得上眼，不承想连个响都没听到。
+                        本片副标题绯色的子弹，懂得人自然知道指的是谁。但别以为这部剧场版就跟黑衣组织有关了，其实这一次只是FBI的主场，犯罪目的是奔着FBI局长去的。
+                    </a>
+                    <p class="describemovie">
+                        <a href="#">Mosquito史歌</a>
+                        评 《<a href="#">名侦探柯南：绯色的子弹</a>》
+                        <i class="moviegrade">&nbsp;6.9&nbsp;</i>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="card">
+        <a href={{ id }} target="_blank">
+            <img class="card-img-top" alt="{{ title }}" src="{{ thumbnail }}">
+            <em class="icohot"></em>
+            <i class="moviegrade">{{ rating }}</i>
+        </a>
+        <h5 class="card-title">
+            <a href={{ id }} target="_blank">{{ title }}</a>
+        </h5>
+    </div>
+{% endmacro %}
+
+
+{# reviewList的宏：一行影片缩略图-#}
+{% macro reviewList(module_title, cards, show_num, category=category) %}
+    {#    module_title      : 影片类型标题，电影/电视剧...#}
+    {#    cards             : 传入的n个影片 #}
+    {#    category          : 影片类型，用int类型区分#}
+    {#    show_num          : 要展示的影片缩略图数量#}
+
+{% endmacro %}
+
+
+
+{# longReviewCard的宏：一个长影评的缩略图  #}
+{% macro longReviewCard(thumbnail,title,rating, author,id="#") %}
+
+{% endmacro %}
+

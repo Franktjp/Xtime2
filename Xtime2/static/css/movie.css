@@ -1,0 +1,285 @@
+img {
+    width: 100%;
+}
+
+@media only screen and (max-width: 767px) {
+    #navbarTogglerDemo02 {
+        position: fixed;
+        top: 0;
+        left: 15px;
+        z-index: 99;
+        width: 280px;
+        height: 100%;
+        background-color: #ddd;
+        overflow: auto;
+    }
+
+    .menu-overlay {
+        display: none;
+        background-color: #000;
+        bottom: 0;
+        left: 0;
+        opacity: 0.5;
+        filter: alpha(opacity=50);
+        /* IE7 & 8 */
+        position: fixed;
+        right: 0;
+        top: 0;
+        z-index: 49;
+    }
+
+}
+
+
+.div-img {
+    /*width: 50%;*/
+    width: 300px;
+    /*height: 100%;*/
+    height: 415px;
+    object-fit: cover;
+    overflow: hidden;
+    transform: rotate(20deg);
+}
+
+.welcome-layer-3 {
+    height: 100%;
+    /* left: 0; */
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.home3-layer-1 {
+    right: 10%;
+    top: -18%;
+}
+
+.welcome-layer-3 > div {
+    position: absolute;
+    right: 100px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.bg-1 {
+    background-image: url("../../static/img/background/green_bg.png");
+    background-color: #cccccc;
+}
+
+.bg-2 {
+    background-image: url("http://quomodosoft.com/html/applic/applic/assets/img/bg-layers/map-layer.png");
+    background-color: #cccccc;
+}
+
+
+/* navbar css */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+a.navbar-brand {
+    float: left;
+    height: 50px;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+    text-decoration: none;
+    color: orangered;
+    font-family: cursive;
+    font-weight: 700;
+
+}
+
+nav.main-navigation {
+    position: relative;
+}
+
+nav.main-navigation ul.nav-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: relative;
+    text-align: center;
+    background-color: rgba(255, 255, 255, .6);
+}
+
+.nav-list li.nav-list-item {
+    display: inline-block;
+    line-height: 54px;
+    margin-left: 0px;
+    margin-top: 0px;
+    /*padding: 16px 20px;*/
+    padding: 0px 20px;
+
+}
+
+.nav-list li.nav-list-item:hover {
+    color: #2F96B4;
+    background-color: #2F96B4;
+}
+
+a.nav-link {
+    text-decoration: none;
+    font-size: 18px;
+    font-family: sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    color: #404040;
+    padding: .1em 1em;
+}
+
+@keyframes FadeIn {
+    0% {
+        opacity: 0;
+        -webkit-transition-duration: 0.8s;
+        transition-duration: 0.8s;
+        -webkit-transform: translateY(-10px);
+        -ms-transform: translateY(-10px);
+        transform: translateY(-10px);
+    }
+
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        -ms-transform: translateY(0);
+        transform: translateY(0);
+        pointer-events: auto;
+        transition: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+.nav-list li {
+    animation: FadeIn 1s cubic-bezier(0.65, 0.05, 0.36, 1);
+    animation-fill-mode: both;
+}
+
+.nav-list li:nth-child(1) {
+    animation-delay: .3s;
+}
+
+.nav-list li:nth-child(2) {
+    animation-delay: .6s;
+}
+
+.nav-list li:nth-child(3) {
+    animation-delay: .9s;
+}
+
+.nav-list li:nth-child(4) {
+    animation-delay: 1.2s;
+}
+
+.nav-list li:nth-child(5) {
+    animation-delay: 1.5s;
+}
+
+/* Animation */
+
+@keyframes fadeInUp {
+    from {
+        transform: translate3d(0, 40px, 0)
+    }
+
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes fadeInUp {
+    from {
+        transform: translate3d(0, 40px, 0)
+    }
+
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1
+    }
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-fill-mode: both
+}
+
+.animatedFadeInUp {
+    opacity: 0
+}
+
+.fadeInUp {
+    opacity: 0;
+    animation-name: fadeInUp;
+    -webkit-animation-name: fadeInUp;
+}
+
+
+/* Navbar Hover延迟效果 */
+.nav-list .nav-list-item a:before, .nav-list .nav-list-item a:after {
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    height: 2px;
+    background: #FFF;
+    content: "";
+    opacity: 0;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.nav-list .nav-list-item a:before {
+    top: 0px;
+    /*平移效果*/
+    transform: translateY(30px);
+}
+
+.nav-list .nav-list-item a:after {
+    bottom: 0px;
+    transform: translateY(-30px);
+}
+
+.nav-list .nav-list-item a:hover:before, .nav-list .nav-list-item a:hover:after {
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+
+/*movie 剧情 / 更多*/
+.content {
+    min-height: 1200px;
+    width: 1200px;
+}
+
+.movieTitle {
+    background: #fff;
+    line-height: 1em;
+    color: #d6d6d6;
+    transform: rotate(90deg);
+    transform-origin: 0 0;
+    position: absolute;
+
+    font-size: 100px;
+    left: 120px;
+
+    /*控制文字显示一行*/
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+.desc {
+    padding: 0 100px 0 120px;
+    /*font-size: 14px;*/
+    line-height: 2em;
+    width: 1200px;
+    margin: 0 auto;
+}

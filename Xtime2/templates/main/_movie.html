@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+<!--导入宏-->
+{% from 'macros.html' import movieList, reviewList %}
+
+{#{% block title %}Xtime时光网：让电影遇见生活{% endblock %}#}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/movie.css') }}">
+    <style>
+        .header {
+            height: 150px;
+        }
+
+        .text-white {
+            margin: auto;
+            width: 1200px;
+        }
+
+        .grade_tool {
+            position: relative;
+            zoom: 1;
+            margin-top: 10px;
+            float: left;
+            display: flex;
+            background-color: #0b2e13;
+            height: 80px;
+        }
+
+        .grade_tool .gradebox {
+            background: #679c21;
+            width: 80px;
+            height: 80px;
+            color: #fff;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .grade_tool .gradebox > div {
+            width: 80px;
+        }
+
+        .grade_tool .gradebox b {
+            padding: 0;
+            width: 45px;
+            height: 45px;
+            margin: 5px auto 3px;
+            text-align: left;
+            font-size: 45px;
+            line-height: 1.2em;
+            letter-spacing: 0;
+            position: relative;
+            zoom: 1;
+            display: block;
+        }
+
+        .grade_tool .gradebox b sup {
+            font-size: 24px;
+            line-height: 24px;
+            position: absolute;
+            top: 6px;
+            right: 0;
+            vertical-align: top;
+        }
+
+        .grade_tool .score {
+            flex: 1;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            padding-left: 10px;
+            padding-top: 8px;
+        }
+
+        .grade_tool .score dt {
+            font-size: 26px;
+        }
+
+        .grade_tool .score dt span {
+            font-size: 12px;
+        }
+
+        .mr6 {
+            margin-right: 6px;
+        }
+
+        .grade_tool .score dt span {
+            font-size: 12px;
+        }
+
+        .m_gtopout {
+            margin-left: 10px;
+            border-left: 1px solid #fff;
+            width: 460px;
+            float: right;
+            min-height: 140px;
+            padding-left: 30px;
+        }
+
+        .grade_area .m_gtopout .cont {
+            padding-right: 30px;
+        }
+
+        .rateBox {
+            width: 100%;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .userInfo {
+            text-align: center;
+            width: 60px;
+            margin-right: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+
+        .userInfo img {
+            width: 58px;
+            height: 58px;
+            margin-bottom: 5px;
+        }
+
+        .rate {
+            position: relative;
+            padding-right: 20px;
+        }
+
+        .rate p {
+            padding-bottom: 10px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .rate button {
+            border: 1px solid #ccc;
+            background: #fff;
+            border-radius: 3px;
+            padding: 0 8px;
+            height: 20px;
+            line-height: 20px;
+            color: #ccc;
+            margin-right: 14px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .el-rate {
+            height: 20px;
+            line-height: 1;
+        }
+
+        .el-rate__icon, .el-rate__item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .el-rate__icon {
+            font-size: 18px;
+            margin-right: 6px;
+            color: #c0c4cc;
+            transition: .3s;
+        }
+
+        .rate .el-rate__text {
+            position: absolute;
+            top: -20px;
+            left: 55%;
+            transform: translateX(-50%);
+            color: #679c21 !important;
+            text-align: center;
+            width: 200px;
+            height: 47px;
+            line-height: 56px;
+        }
+
+        .el-rate__text {
+            font-size: 14px;
+            vertical-align: middle;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {#    主要布局参考：[Bootstrap 4.1.1 Snippet by jeevan123456](https://bootsnipp.com/snippets/7ojar)#}
+    <section class="py-5 bg-1 text-white">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1>{{ movie.name }}({{ movie.release_date.year }})</h1>
+                    <br>
+                    <h5>{{ movie.mins }}分钟 -
+                        {% for tag in movie.tags %}{{ tag.name }}/{% endfor %}
+                        - {{ movie.release_date }}上映
+                    </h5>
+                    <nav class="main-navigation">
+                        {# <div class="navbar-header animated fadeInUp">#}
+                        {#     <a class="navbar-brand" href="#">Logo Area</a>#}
+                        {# </div>#}
+                        {# 下面的导航栏实现了多种效果#}
+                        {# 参考：[css3实现按钮hover效果](https://juejin.cn/post/6844904129291091975)#}
+                        {# 参考：["导航栏Navbar Hover Effects"](https://bootsnipp.com/snippets/qNM9N)#}
+                        {# 参考：["导航栏navbar with animation"](https://bootsnipp.com/snippets/xrDxz)#}
+                        <ul class="nav-list">
+                            <li class="nav-list-item">
+                                <a href={{ url_for('main.get_movie', movie_id=movie.id) }}
+                                           class="nav-link">影片首页</a>
+                            </li>
+                            <li class="nav-list-item">
+                                <a href={{ url_for('main.get_movie', movie_id=movie.id) }}
+                                           class="nav-link">n 条影评</a>
+                            </li>
+                            <li class="nav-list-item">
+                                <a href={{ url_for('main.get_movie_desc', movie_id=movie.id) }}
+                                           class="nav-link">剧情</a>
+                            </li>
+                            <li class="nav-list-item">
+                                <a href={{ url_for('main.get_movie_more', movie_id=movie.id) }}
+                                           class="nav-link">更多资料</a>
+                            </li>
+                        </ul>
+
+                    </nav>
+
+                    <div class="grade_area row">
+                        <div class="grade_tool col-md-5">
+                            <div class="gradebox">
+                                {% if movie.score == None %}
+                                    <div style="color: #b3d7ff">
+                                        <br>
+                                        <h6>暂无评分</h6>
+                                    </div>
+                                {% else %}
+                                    <div>
+                                        <b>{{ movie.score|int }}<sup>.{% set score = (10 * (movie.score|float - movie.score|int + 1e-6))|int %}{{ score }}</sup></b>
+                                        <p>总分：10</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <dl class="score">
+                                <dt><span>1294人评分</span> <em class="ml6 mr6"></em> <span>1801人想看</span></dt>
+                            </dl>
+                        </div>
+                        <div class="m_gtopout col-md-6">
+                            <div class="cont">
+                                <div class="rateBox">
+                                    <div class="flex">
+                                        <div class="userInfo"><a><img
+                                                src="https://img2.mtime.cn/images/default/head.gif">
+                                            <!----></a></div>
+                                        <div class="rate"><p>我要评分：</p>
+                                            <div class="flex">
+                                                <button class="">想看</button>
+                                                <div role="slider" aria-valuenow="0"
+                                                     aria-valuemin="0" aria-valuemax="10" tabindex="0" class="el-rate">
+                                                    <span class="el-rate__item" style="cursor: pointer;"><i
+                                                            class="el-rate__icon el-icon-star-off"
+                                                            style="color: rgb(198, 209, 222);"><!----></i></span><span
+                                                        class="el-rate__item" style="cursor: pointer;"><i
+                                                        class="el-rate__icon el-icon-star-off"
+                                                        style="color: rgb(198, 209, 222);"><!----></i></span><span
+                                                        class="el-rate__item" style="cursor: pointer;"><i
+                                                        class="el-rate__icon el-icon-star-off"
+                                                        style="color: rgb(198, 209, 222);"><!----></i></span><span
+                                                        class="el-rate__item" style="cursor: pointer;"><i
+                                                        class="el-rate__icon el-icon-star-off"
+                                                        style="color: rgb(198, 209, 222);"><!----></i></span><span
+                                                        class="el-rate__item" style="cursor: pointer;"><i
+                                                        class="el-rate__icon el-icon-star-off"
+                                                        style="color: rgb(198, 209, 222);"><!----></i></span><span
+                                                        class="el-rate__item" style="cursor: pointer;"><i
+                                                        class="el-rate__icon el-icon-star-off"
+                                                        style="color: rgb(198, 209, 222);"><!----></i></span><span
+                                                        class="el-rate__item" style="cursor: pointer;"><i
+                                                        class="el-rate__icon el-icon-star-off"
+                                                        style="color: rgb(198, 209, 222);"><!----></i></span><span
+                                                        class="el-rate__item" style="cursor: pointer;"><i
+                                                        class="el-rate__icon el-icon-star-off"
+                                                        style="color: rgb(198, 209, 222);"><!----></i></span><span
+                                                        class="el-rate__item" style="cursor: pointer;"><i
+                                                        class="el-rate__icon el-icon-star-off"
+                                                        style="color: rgb(198, 209, 222);"><!----></i></span><span
+                                                        class="el-rate__item" style="cursor: pointer;"><i
+                                                        class="el-rate__icon el-icon-star-off"
+                                                        style="color: rgb(198, 209, 222);"><!----></i></span><span
+                                                        class="el-rate__text" style="color: rgb(31, 45, 61);"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="textComment">
+                                        <div class="el-textarea">
+                                            <textarea autocomplete="off"
+                                                      id="comment"
+                                                      placeholder="对影片的简短评论"
+                                                      class="el-textarea__inner"
+                                                      style="resize: none; min-height: 51.9922px; height: 51.9922px;">
+                                            </textarea>
+                                        </div>
+                                        <p>
+                                            <a href="#"><i class="el-icon-edit">写长影评</i></a>
+                                            <span><button class="btn">发表</button></span>
+                                        </p>
+                                    </div>
+                                    <div class="content" style="display: none;">
+                                        <p class="el-tooltip commentContent" aria-describedby="el-tooltip-5069"
+                                           tabindex="0">
+                                            <i class="icoDot"></i>
+                                            <span></span>
+                                            <span class="delte" style="display: none;">删除</span>
+                                        </p>
+                                        <p class="w_comment">
+                                            <a href="#">
+                                                <i class="el-icon-edit">写长影评</i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# <button type="button" class="btn btn-warning">Warning</button>#}
+                </div>
+                <div class="col-md-5 d-none d-lg-block">
+                    <div class="welcome-layer-3 ">
+                        <div class="home3-layer-1 wow fadeInRight" data-wow-delay="0.5s"
+                             style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInRight;">
+                            {#                            <img src="http://quomodosoft.com/html/applic/applic/assets/img/screenshots/screenshot-2.png" alt="" class="div-img">#}
+                            <img src="{{ movie.image }}" alt="{{ movie.name }}" class="div-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% block movie_content %}{% endblock %}
+
+{% endblock %}

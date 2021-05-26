@@ -1,0 +1,70 @@
+.card {
+    /*width: 172px;*/
+    width: 170px;
+    border: 0;
+    /*在原本元素上再加一个transition*/
+    /*参考: [CSS3实现伪类hover离开时平滑过渡效果](https://segmentfault.com/a/1190000010583130)*/
+    transition: all 0.4s ease-out;
+}
+
+.card > a {
+    display: block;
+    width: 170px;
+    height: 256px;
+    overflow: hidden;
+    position: relative;
+}
+
+.card .card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card .card-title {
+    font-size: 18px;
+    padding-top: 10px;
+    font-weight: 400;
+    text-align: center;
+    /*设置文字只显示一行，多余显示省略号*/
+    display: inline-block;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card .icohot, .card .iconew {
+    background: url(../img/index24.png) -64px -103px no-repeat;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.card .icohot {
+    background-position: -113px -103px;
+}
+
+.card:hover {
+    transform: scale(1.08);
+    transition: all 0.4s ease-out;
+}
+
+.moviegrade {
+    background: #74ab34;
+    width: 32px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    color: #fff;
+    font-size: 13px;
+}
+
+.card .moviegrade {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+

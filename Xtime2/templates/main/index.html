@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+<!--导入宏-->
+{% from 'macros.html' import movieList, reviewList %}
+
 {% block title %}Xtime时光网：让电影遇见生活{% endblock %}
 {% block head %}
 {{ super() }}
@@ -8,11 +11,13 @@
 		z-index: 4;
 	}
 </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
+
 {% endblock %}
 
 {% block content %}
 <!-- main部分(轮播图+影线热映+热门影评) -->
-<div class="container">
+<div class="container" style="width: 1448px">
 	<!-- 注：由于padding等属性的原因，两种容器.container和.container-fluid不能相互嵌套 -->
 
 	<!-- 网站简介 -->
@@ -106,125 +111,8 @@
 					<a href="#" class="cmore" style="float: right;">更多</a>
 				</div>
 			</div>
-
 			<!-- 影线热映缩略图 -->
-			<div class="row">
-				<div class="col-md-12">
-					<div class="row">
-						<!-- 影片缩略图：一共6个缩略图 -->
-						<div class="col-md-2">
-							<div class="card">
-								<img class="card-img-top" alt="名侦探柯南：绯色的子弹" src="../../static/img/名侦探柯南.png">
-								<div class="card-block">
-									<h5 class="card-title">
-										名侦探柯南：绯色的子弹
-
-									</h5>
-									<!-- <p class="card-text">
-											Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit
-										</p> -->
-									<p>
-										<a class="btn btn-primary" href="#">Action</a>
-										<!-- <a class="btn" href="#">Action</a> -->
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-2">
-							<div class="card">
-								<img class="card-img-top" alt="名侦探柯南：绯色的子弹" src="../../static/img/名侦探柯南.png">
-
-								<div class="card-block">
-									<h5 class="card-title">
-										名侦探柯南：绯色的子弹
-
-									</h5>
-									<!-- <p class="card-text">
-											Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit
-										</p> -->
-									<p>
-										<a class="btn btn-primary" href="#">Action</a>
-										<!-- <a class="btn" href="#">Action</a> -->
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-2">
-							<div class="card">
-								<img class="card-img-top" alt="名侦探柯南：绯色的子弹" src="../../static/img/名侦探柯南.png">
-
-								<div class="card-block">
-									<h5 class="card-title">
-										名侦探柯南：绯色的子弹
-
-									</h5>
-									<!-- <p class="card-text">
-											Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit
-										</p> -->
-									<p>
-										<a class="btn btn-primary" href="#">Action</a>
-										<!-- <a class="btn" href="#">Action</a> -->
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-2">
-							<div class="card">
-								<img class="card-img-top" alt="名侦探柯南：绯色的子弹" src="../../static/img/名侦探柯南.png">
-								<div class="card-block">
-									<h5 class="card-title">
-										名侦探柯南：绯色的子弹
-
-									</h5>
-									<!-- <p class="card-text">
-											Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit
-										</p> -->
-									<p>
-										<a class="btn btn-primary" href="#">Action</a>
-										<!-- <a class="btn" href="#">Action</a> -->
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-2">
-							<div class="card">
-								<img class="card-img-top" alt="名侦探柯南：绯色的子弹" src="../../static/img/名侦探柯南.png">
-								<div class="card-block">
-									<h5 class="card-title">
-										名侦探柯南：绯色的子弹
-
-									</h5>
-									<!-- <p class="card-text">
-											Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit
-										</p> -->
-									<p>
-										<a class="btn btn-primary" href="#">Action</a>
-										<!-- <a class="btn" href="#">Action</a> -->
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-2">
-							<div class="card">
-								<img class="card-img-top" alt="名侦探柯南：绯色的子弹" src="../../static/img/名侦探柯南.png">
-								<div class="card-block">
-									<h5 class="card-title">
-										名侦探柯南：绯色的子弹
-
-									</h5>
-									<!-- <p class="card-text">
-											Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit
-										</p> -->
-									<p>
-										<a class="btn btn-primary" href="#">Action</a>
-										<!-- <a class="btn" href="#">Action</a> -->
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+            {{ movieList("电影", cards, 6, 1) }}
 		</div>
 	</div>
 
@@ -425,8 +313,8 @@
 							<div class="card commentsmod">
 								<!-- 热门影评相关的影片图片 -->
 								<a href="#" target="_blank">
-									<img src="../../static/img/名侦探柯南.png" title="名侦探柯南" alt="名侦探柯南" width="80"
-										height="120">
+									<img src="../../static/img/movie/名侦探柯南.png" title="名侦探柯南" alt="名侦探柯南" width="80"
+                                         height="120">
 								</a>
 								<!-- 热门影评首段 + 影片具体信息 -->
 								<div class="col-md-8">
@@ -450,8 +338,8 @@
 							<div class="card commentsmod">
 								<!-- 热门影评相关的影片图片 -->
 								<a href="#">
-									<img src="../../static/img/名侦探柯南.png" title="名侦探柯南" alt="名侦探柯南" width="80"
-										height="120">
+									<img src="../../static/img/movie/名侦探柯南.png" title="名侦探柯南" alt="名侦探柯南" width="80"
+                                         height="120">
 								</a>
 								<!-- 热门影评首段 + 影片具体信息 -->
 								<div class="col-md-8">
@@ -475,7 +363,7 @@
 							<div class="card commentsmod">
 								<!-- 热门影评相关的影片图片 -->
 								<a href="#">
-									<img src="../../static/img/名侦探柯南.png" alt="名侦探柯南" width="80" height="120">
+									<img src="../../static/img/movie/名侦探柯南.png" alt="名侦探柯南" width="80" height="120">
 								</a>
 								<!-- 热门影评首段 + 影片具体信息 -->
 								<div class="col-md-8">
@@ -499,7 +387,7 @@
 							<div class="card commentsmod">
 								<!-- 热门影评相关的影片图片 -->
 								<a href="#">
-									<img src="../../static/img/名侦探柯南.png" alt="名侦探柯南" width="80" height="120">
+									<img src="../../static/img/movie/名侦探柯南.png" alt="名侦探柯南" width="80" height="120">
 								</a>
 								<!-- 热门影评首段 + 影片具体信息 -->
 								<div class="col-md-8">
@@ -523,7 +411,7 @@
 							<div class="card commentsmod">
 								<!-- 热门影评相关的影片图片 -->
 								<a href="#">
-									<img src="../../static/img/名侦探柯南.png" alt="名侦探柯南" width="80" height="120">
+									<img src="../../static/img/movie/名侦探柯南.png" alt="名侦探柯南" width="80" height="120">
 								</a>
 								<!-- 热门影评首段 + 影片具体信息 -->
 								<div class="col-md-8">
@@ -547,7 +435,7 @@
 							<div class="card commentsmod">
 								<!-- 热门影评相关的影片图片 -->
 								<a href="#">
-									<img src="../../static/img/名侦探柯南.png" alt="名侦探柯南" width="80" height="120">
+									<img src="../../static/img/movie/名侦探柯南.png" alt="名侦探柯南" width="80" height="120">
 								</a>
 								<!-- 热门影评首段 + 影片具体信息 -->
 								<div class="col-md-8">

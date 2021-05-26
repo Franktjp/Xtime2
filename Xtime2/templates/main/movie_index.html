@@ -1,0 +1,16 @@
+{% extends 'main/_movie.html' %}
+
+{% block title %}{{ movie.name }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block movie_content %}
+    <div class="container content">
+        <div class="movieTitle">
+            {{ movie.name }}
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,13 +1,13 @@
-/* 
+/*
 手写css有感
 如果自定义的样式没有生效很有可能被BootStrap中定义的样式覆盖了，通过更高的优先级解决；
-
 */
 
 * {
-    padding:0;   /* 清除内边距 */
-    margin:0;    /* 清除外边距 */
+    padding: 0; /* 清除内边距 */
+    margin: 0; /* 清除外边距 */
 }
+
 /* （1）link : 设置a对象在未被访问前的样式表属性。
 （2）visited : 设置a对象在其链接地址已被访问过时的样式表属性。
 （3）hover : 设置对象在其鼠标悬停时的样式表属性。
@@ -17,12 +17,15 @@
 a:visited {
     text-decoration: none;
 }
+
 a:hover {
     text-decoration: none;
 }
+
 a:active {
     text-decoration: none;
 }
+
 a:focus {
     /* :focus 伪类选择器用于选取获得焦点的元素 */
     text-decoration: none;
@@ -53,6 +56,7 @@ a:focus {
     top: 5px;
     right: 5px;
 }
+
 .hotcomments .commentsmod .describemovie a {
     max-width: 85px;
     color: #888;
@@ -69,11 +73,11 @@ a:focus {
     line-height: 1.5;
     width: 100%;
     /* 多行文字只显示前几行。以下几行同时使用有效(推荐后端来做) */
-    overflow: hidden;   /*超出部分隐藏*/
-    text-overflow: ellipsis;    /*显示省略号来代表被修剪的文本*/
-    display: -webkit-box;          /* 弹性伸缩盒子模型显示 */
-    -webkit-line-clamp: 3;      /* 可以显示的行数，超出部分用...表示*/
-    -webkit-box-orient: vertical;   /* 设置或检索伸缩盒对象的子元素的排列方式 */
+    overflow: hidden; /*超出部分隐藏*/
+    text-overflow: ellipsis; /*显示省略号来代表被修剪的文本*/
+    display: -webkit-box; /* 弹性伸缩盒子模型显示 */
+    -webkit-line-clamp: 3; /* 可以显示的行数，超出部分用...表示*/
+    -webkit-box-orient: vertical; /* 设置或检索伸缩盒对象的子元素的排列方式 */
 }
 
 
@@ -97,23 +101,25 @@ a:focus {
 
 
 .cmore {
-    position:relative;
+    position: relative;
     right: -2px;
     top: 3px;
     color: #000;
     padding-right: 18px;
 }
 
-@media(max-width: 544px) {
-    .navbar .navbar-nav>.nav-item {
+@media (max-width: 544px) {
+    .navbar .navbar-nav > .nav-item {
         float: none;
         margin-left: .1rem;
     }
+
     .navbar .navbar-nav {
-        float:none !important;
+        float: none !important;
     }
-    .navbar .collapse.in, .navbar .collapsing  {
-        clear:both;
+
+    .navbar .collapse.in, .navbar .collapsing {
+        clear: both;
     }
 }
 
@@ -131,134 +137,147 @@ a:focus {
     /* margin-top: 100px; */
     padding-left: 8%;
     /* padding-top: 7%; */
-  }
-  .col-md-4{
-      padding-bottom:20px;
-  }
-  
-  .white {
+}
+
+.col-md-4 {
+    padding-bottom: 20px;
+}
+
+.white {
     color: #fff !important;
-  }
-  .mt{float: left;margin-top: -20px;padding-top: 20px;}
-  .bg-blue-ui {
+}
+
+.mt {
+    float: left;
+    margin-top: -20px;
+    padding-top: 20px;
+}
+
+.bg-blue-ui {
     background-color: #708198 !important;
-  }
-  figure img{width:300px;}
-  
-  #blogCarousel {
+}
+
+figure img {
+    width: 300px;
+}
+
+#blogCarousel {
     padding-bottom: 100px;
-  }
-  
-  .blog .carousel-indicators {
+}
+
+.blog .carousel-indicators {
     left: 0;
     top: -20px;
     height: 50%;
-  }
-  
-  
-  /* The colour of the indicators */
-  
-  .blog .carousel-indicators li {
+}
+
+
+/* The colour of the indicators */
+
+.blog .carousel-indicators li {
     background: #708198;
     border-radius: 50%;
     width: 8px;
     height: 8px;
-  }
-  
-  .blog .carousel-indicators .active {
+}
+
+.blog .carousel-indicators .active {
     background: #0fc9af;
-  }
-  
-  
-  
-  
-  .item-carousel-blog-block {
+}
+
+
+.item-carousel-blog-block {
     outline: medium none;
     padding: 15px;
-  }
-  
-  .item-box-blog {
+}
+
+.item-box-blog {
     border: 1px solid #dadada;
     text-align: center;
     z-index: 4;
     padding: 20px;
-  }
-  
-  .item-box-blog-image {
+}
+
+.item-box-blog-image {
     position: relative;
-  }
-  
-  .item-box-blog-image figure img {
+}
+
+.item-box-blog-image figure {
+    width:100%;
+    height:260px;
+
+}
+.item-box-blog-image figure img {
     width: 100%;
-    height: auto;
-  }
-  
-  .item-box-blog-date {
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-box-blog-date {
     position: absolute;
     z-index: 5;
     padding: 4px 20px;
     top: -20px;
     right: 8px;
     background-color: #41cb52;
-  }
-  
-  .item-box-blog-date span {
+}
+
+.item-box-blog-date span {
     color: #fff;
     display: block;
     text-align: center;
     line-height: 1.2;
-  }
-  
-  .item-box-blog-date span.mon {
+}
+
+.item-box-blog-date span.mon {
     font-size: 18px;
-  }
-  
-  .item-box-blog-date span.day {
+}
+
+.item-box-blog-date span.day {
     font-size: 16px;
-  }
-  
-  .item-box-blog-body {
+}
+
+.item-box-blog-body {
     padding: 10px;
-  }
-  
-  .item-heading-blog a h5 {
+}
+
+.item-heading-blog a h5 {
     margin: 0;
     line-height: 1;
-    text-decoration:none;
+    text-decoration: none;
     transition: color 0.3s;
-  }
-  
-  .item-box-blog-heading a {
-      text-decoration: none;
-  }
-  
-  .item-box-blog-data p {
+}
+
+.item-box-blog-heading a {
+    text-decoration: none;
+}
+
+.item-box-blog-data p {
     font-size: 13px;
-  }
-  
-  .item-box-blog-data p i {
+}
+
+.item-box-blog-data p i {
     font-size: 12px;
-  }
-  
-  .item-box-blog-text {
+}
+
+.item-box-blog-text {
     max-height: 100px;
     /* overflow: hidden; */
-  }
-  
-  .mt-10 {
+}
+
+.mt-10 {
     float: left;
     margin-top: -10px;
     padding-top: 10px;
-  }
-  
-  .btn.bg-blue-ui.white.read {
+}
+
+.btn.bg-blue-ui.white.read {
     cursor: pointer;
     padding: 4px 20px;
     float: left;
     margin-top: 10px;
-  }
-  
-  .btn.bg-blue-ui.white.read:hover {
+}
+
+.btn.bg-blue-ui.white.read:hover {
     box-shadow: 0px 5px 15px inset #4d5f77;
-  }
-  
+}

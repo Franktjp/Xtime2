@@ -1,0 +1,53 @@
+{% extends 'main/_movie.html' %}
+
+{% block title %}{{ movie.name }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <style>
+        {#.desc {#}
+        {#    min-height: 1200px;#}
+        {
+        #}#}
+        {##}
+        {#.movieTitle {#}
+        {#    background: #fff;#}
+        {#    line-height: 1em;#}
+        {#    color: #d6d6d6;#}
+        {#    transform: rotate(90deg);#}
+        {#    transform-origin: 0 0;#}
+        {#    position: absolute;#}
+        {##}
+        {#    font-size: 100px;#}
+        {#    left: 120px;#}
+        {
+        #}#}
+        {##}
+        {#.content {#}
+        {#    padding: 0 100px 0 120px;#}
+        {#    font-size: 14px;#}
+        {#    line-height: 2em;#}
+        {#    width: 1200px;#}
+        {#    margin: 0 auto;#}
+        {
+        #}#}
+    </style>
+{% endblock %}
+
+{% block movie_content %}
+    <div class="container content">
+        <div class="movieTitle">
+            {{ movie.name }}
+        </div>
+        <div class="desc">
+            <h4>剧情</h4>
+            <p>
+                {% if movie.desc|length == 0 %}
+                    剧情不存在！
+                {% else %}
+                    {{ movie.desc }}
+                {% endif %}
+            </p></div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'main/_movie.html' %}
+
+{% block title %}{{ movie.name }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <style>
+        h4 {
+            display: inline-block
+        }
+
+        .movieTitle {
+        }
+    </style>
+{% endblock %}
+
+{% block movie_content %}
+    <div class="container content">
+        <div class="movieTitle">
+            {{ movie.name }}
+        </div>
+        {#        <div class="desc">#}
+        {#            <h4>剧情</h4>#}
+        {#            <p>#}
+        {#                {% if movie.desc|length == 0 %}#}
+        {#                    剧情不存在！#}
+        {#                {% else %}#}
+        {#                    {{ movie.desc }}#}
+        {#                {% endif %}#}
+        {#            </p>#}
+        {#        </div>#}
+        <div class="desc">
+            <h4 class="col-md-6">中文名:</h4>
+            {{ movie.name }}
+        </div>
+        <div class="desc">
+            <h4 class="col-md-6">片长:</h4>
+            {{ movie.mins }}
+        </div>
+        <div class="desc">
+            <h4 class="col-md-6">上映日期:</h4>
+            {{ movie.release_date }}
+        </div>
+        <div class="desc">
+            <h4 class="col-md-6">评分:</h4>
+            {{ movie.score }}
+        </div>
+        <div class="desc">
+            <h4 class="col-md-6">标签:</h4>
+            {% for tag in tags %}
+                {{ tag.name }} -
+            {% endfor %}
+        </div>
+        <div class="desc"><h4 class="col-md-4">封面图</h4><img src="{{ movie.image }}"></div>
+
+
+    </div>
+{% endblock %}
