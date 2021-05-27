@@ -129,7 +129,7 @@ def register_commands(app):
     @app.cli.command()
     def forge():
         """Generate fake data."""
-        from Xtime2.fakes import fake_admin, fake_user, fake_movie
+        from Xtime2.fakes import fake_admin, fake_user, fake_movie, fake_review
 
         db.drop_all()
         db.create_all()
@@ -138,5 +138,6 @@ def register_commands(app):
         # fake_admin()
         fake_user()
         fake_movie()
+        fake_review()
 
         click.echo('Done.')

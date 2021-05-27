@@ -168,6 +168,19 @@ class CropAvatorForm(FlaskForm):
     submit = SubmitField('Crop and Update')
 
 
+class ReviewForm(FlaskForm):
+    title = StringField(u'影评标题', validators=[DataRequired(), Length(1, 64)])
+    content = CKEditorField(u'影评内容', validators=[DataRequired()])
+    submit = SubmitField(u'发表')
+
+
+class CommentForm(FlaskForm):
+    content = TextAreaField(u'评论', validators=[DataRequired()])
+    submit = SubmitField()
+
+
+
+
 
 
 # 其他：

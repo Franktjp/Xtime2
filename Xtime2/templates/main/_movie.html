@@ -306,23 +306,25 @@
                                             </textarea>
                                         </div>
                                         <p>
-                                            <a href="#"><i class="el-icon-edit">写长影评</i></a>
+                                            <a href={{ url_for('main.create_review', movie_id=movie.id) }}><i class="el-icon-edit">写长影评</i></a>
+{#                                            <a href={{ url_for('main.get_movie', movie_id=movie.id) }}#}
+{#                                           class="nav-link">影片首页</a>#}
                                             <span><button class="btn">发表</button></span>
                                         </p>
                                     </div>
-                                    <div class="content" style="display: none;">
-                                        <p class="el-tooltip commentContent" aria-describedby="el-tooltip-5069"
-                                           tabindex="0">
-                                            <i class="icoDot"></i>
-                                            <span></span>
-                                            <span class="delte" style="display: none;">删除</span>
-                                        </p>
-                                        <p class="w_comment">
-                                            <a href="#">
-                                                <i class="el-icon-edit">写长影评</i>
-                                            </a>
-                                        </p>
-                                    </div>
+{#                                    <div class="content" style="display: none;">#}
+{#                                        <p class="el-tooltip commentContent" aria-describedby="el-tooltip-5069"#}
+{#                                           tabindex="0">#}
+{#                                            <i class="icoDot"></i>#}
+{#                                            <span></span>#}
+{#                                            <span class="delte" style="display: none;">删除</span>#}
+{#                                        </p>#}
+{#                                        <p class="w_comment">#}
+{#                                            <a href="#">#}
+{#                                                <i class="el-icon-edit">写长影评</i>#}
+{#                                            </a>#}
+{#                                        </p>#}
+{#                                    </div>#}
                                 </div>
                             </div>
                         </div>

@@ -74,7 +74,7 @@
 {% endblock nav %}
 
 
-<div class="container">
+<div class="container flash">
     {% for message in get_flashed_messages(with_categories=True) %}
         <script type="text/javascript">
             // 注：message[0]和message[1]不能在js中直接使用，先用变量存储为string类型

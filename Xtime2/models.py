@@ -48,12 +48,18 @@ class User(db.Model, UserMixin):
     introduction = db.Column(db.Text)  # 个人介绍
     # 用户头像，存储路径(表单用FileField字段，实现参考https://blog.csdn.net/liuredflash/article/details/79646678)
     photo = db.Column(db.String(64), default='default_icon.jpg')
-    privilege = db.Column(db.Integer, default=2)      # 用户权限(普通用户2，普通管理员1，root管理员0)
+    privilege = db.Column(db.Integer, default=2)  # 用户权限(普通用户2，普通管理员1，root管理员0)
 
     avatar_s = db.Column(db.String(64))
     avatar_m = db.Column(db.String(64))
     avatar_l = db.Column(db.String(64))
     avatar_raw = db.Column(db.String(64))
+
+    # 该用户撰写的影评(不需要级联删除)
+    reviews = db.relationship(
+        'Review',
+        backref='user'
+    )
 
     def set_password(self, password):
         """用来设置密码的方法，接受密码作为参数"""
@@ -77,8 +83,8 @@ class User(db.Model, UserMixin):
 
 # association table关联表(影片<->标签)
 movie_tag = db.Table('movie_tag',
-                db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
-                db.Column('movie_id', db.Integer, db.ForeignKey('movie.id')))
+                     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+                     db.Column('movie_id', db.Integer, db.ForeignKey('movie.id')))
 
 
 class Tag(db.Model):
@@ -100,7 +106,6 @@ class Movie(db.Model):
     __tablename__ = 'movie'
     id = db.Column(db.Integer, primary_key=True)  # ID
     name = db.Column(db.String(50))  # 影片名
-    # type = db.Column(db.String(30))  # 影片类型(不用该字段，用tags代替)
     # 图片应该也要加一个单独的类，存储在数据库中，电影与图片是一对多的关系，测试阶段用假数据代替
     image = db.Column(db.String(64), default='default.jpg')  # 封面图
     desc = db.Column(db.Text)  # 剧情
@@ -113,18 +118,29 @@ class Movie(db.Model):
                            lazy='dynamic')
     # 影片分类(综艺、电影、动漫、纪录片、电视剧、儿童...)one分类 to many影片
     # 一部影片只对应一个分类，因此影片和分类是多对一关系
-    # category_id = db.Column(db.Integer, db.ForeignKey('Category.id'))
+    # category_id = db.
+    # Column(db.Integer, db.ForeignKey('Category.id'))
+
+    # cascade：级联操作
+    reviews = db.relationship(
+        'Review',
+        backref='movie',
+        cascade='all, delete',
+        passive_deletes=True
+    )
 
 
 class Review(db.Model):
     """
         影评实体：影评id、影评标题、影评内容、对应类型、喜欢数、不喜欢数、收藏数、举报数、转载链接
-        注：
+        注：影评与影片
     """
+    __tablename__ = 'review'
     id = db.Column(db.Integer, primary_key=True)  # ID
     title = db.Column(db.String(64), unique=True)  # 影评标题
-    content = db.Column(db.Text)  # 影评内容(字段待定，)
+    content = db.Column(db.Text)  # 影评内容
     # 对应类型：1表示对应电影，2表示对应话题，默认为1(以后可能会有更多的类型)
+    # 该字段考虑用新的表category替代，暂不考虑
     review_type = db.Column(db.Integer, default=1)
     # 最后修改时间(但是关于用户修改应该要有日志系统)
     modify_time = db.Column(db.DateTime, default=datetime.utcnow)
@@ -134,48 +150,50 @@ class Review(db.Model):
     tipoff_nums = db.Column(db.Integer, default=0)  # 被举报数
     # 转载链接(至于为什么用TEXT字段，网上也是众说纷纭，暂且用TEXT吧，虽然资源占用较多
     # link = db.Column(db.TEXT)
-    link = db.Column(db.String(255))
-    # 级联操作
-    comments = db.relationship('Comment', back_populates='review', cascade='all')
+    link = db.Column(db.String(255), default=None)
 
-    """
-    注：在SQL中，db.TEXT相当于CLOB或者TEXT(问题来了，图片应该怎么存，视频呢)
-    BLOB、CLOB相关：
-    BLOB和CLOB都是大字段类型，BLOB是按二进制来存储的，而CLOB是可以直接存储文字的。其实两个是可以互换的的，
-    或者可以直接用LOB字段代替这两个。但是为了更好的管理ORACLE数据库，通常像图片、文件、音乐等信息就用BLOB
-    字段来存储，先将文件转为二进制再存储进去。而像文章或者是较长的文字，就用CLOB存储，这样对以后的查询更新
-    存储等操作都提供很大的方便。
-    LOB（Large Object，大型对象）类型分为BLOB和CLOB两种：
-    BLOB即二进制大型对象（Binary Large Object），适用于存贮非文本的字节流数据（如程序、图象、影音等）。
-    CLOB，即字符型大型对象（Character Large Object），则与字符集相关，适于存贮文本型的数据（如历史档案、大部头著作等）。
-    参考：
-        https://www.w3schools.com/sql/sql_datatypes.asp
-        因此，MYSQL中，文章等用TEXT/LONGTEXT，图片等用BLOB/LONGBLOB
-    """
+    # 外键：movie(级联删除)和user(不级联删除)均为一对多关系
+    movie_id = db.Column(db.Integer, db.ForeignKey('movie.id', ondelete='CASCADE'))
+    # movie = db.relationship('Movie', back_populates='reviews')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    # 级联操作
+    # comments = db.relationship('Comment', backref='review', cascade='all, delete', passive_deletes=True)
+    comments = db.relationship(
+        'Comment',
+        back_populates='review',
+        cascade='all, delete'
+    )
+
 
 
 class Comment(db.Model):
     """
         评论实体：评论id、评论内容、评论类型、添加时间、喜欢数、不喜欢数
     """
+    __tablename__ = 'comment'
     id = db.Column(db.Integer, primary_key=True)  # 必须加主键
     content = db.Column(db.String(500))  # 这里与影评的不同是限制了字数为500，短评可不能像长评那么长
     comment_type = db.Column(db.Integer, default=1)  # 默认为1，即影评；2为...暂定
-    # add_time = db.Column(db.DateTime, default=datetime.utcnow, index=True)  # 添加时间(为什么要加index)
-    add_time = db.Column(db.DateTime, default=datetime.utcnow)  # 添加时间(为什么要加index)
+    # timestamp = db.Column(db.DateTime, default=datetime.utcnow)  # 添加时间(为什么要加index)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     fav_nums = db.Column(db.Integer, default=0)
     dislike_nums = db.Column(db.Integer, default=0)
-    # reviewd字段是为了防止垃圾评论和不当评论，当用户发表评论后，评论默认显示在博客中，管理员有权限将其撤回，则该字段为False
+    # checked字段是为了防止垃圾评论和不当评论，当用户发表评论后，评论默认显示在影评中，管理员有权限将其撤回，则该字段为False
     checked = db.Column(db.Boolean, default=True)
-    review_id = db.Column(db.Integer, db.ForeignKey('review.id'))
+
+    review_id = db.Column(db.Integer, db.ForeignKey('review.id', ondelete='CASCADE'))
     review = db.relationship('Review', back_populates='comments')
 
+    # 添加replied_id字段，通过db.ForeignKey()设置一个外键指向自身的id字段
     replied_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    # 被回复评论（父对象）的标量关系属性replied的定义
     replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
-    replies = db.relationship('Comment', back_populates='replied', cascade='all')
+    # replies = db.relationship('Comment', back_populates='replied', cascade='all')
+    replies = db.relationship('Comment', back_populates='replied', cascade='all, delete-orphan')
 
     """
-        参考：基本照抄下面的，看不懂了嘤嘤嘤
+        参考：基本照抄下面的
         [flask实战-个人博客-程序骨架、创建数据库模型、临接列表关系](https://www.cnblogs.com/xiaxiaoxu/p/10816820.html)
     """
 

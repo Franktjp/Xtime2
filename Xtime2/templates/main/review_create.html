@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}Xtime时光网：让电影遇见生活{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style>
+        .header {
+            height: 110px;
+        }
+
+        .movie-title {
+            display: inline-block;
+        {#font-size: 16px;#}
+        }
+
+        .div-img {
+            display: inline-block;
+        }
+
+        .div-img img {
+            width: 50px;
+            height: 90px;
+            object-fit: cover;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="page-header">
+            <h1>发表影评</h1>
+        </div>
+        <div class="jumbotron">
+            <div class="div-img">
+                <img src="{{ movie.image }}">
+            </div>
+            <h3 class="movie-title lead">
+                {{ movie.name }}
+            </h3>
+
+            {#            <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention#}
+            {#                to#}
+            {#                featured content or information.</p>#}
+            <hr class="my-4">
+            {#            <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>#}
+            <p class="lead">是否有剧透</p>
+            <p class="lead">是否是原创，这是我的原创内容，我已阅读并同意<span>《原创内容声明》</span></p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+            </p>
+        </div>
+
+
+        <div class="card-body">
+            <form method="post">
+                {{ form.csrf_token() }}
+                {{ form.title.label }}{{ form.title() }}
+                {{ form.content.label }}{{ form.content() }}
+                {{ form.submit() }}
+            </form>
+
+            {#            {{ render_form(form) }}#}
+        </div>
+        <div class="container" style="width: 1200px">
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+    {{ ckeditor.config(name='body') }}
+{% endblock %}
+
+
