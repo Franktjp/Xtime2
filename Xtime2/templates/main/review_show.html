@@ -1,128 +1,23 @@
 {% extends 'base.html' %}
-{% from 'bootstrap/form.html' import render_form %}
+{#{% from 'bootstrap/form.html' import render_form %}#}
+{% from 'macros.html' import ReviewHeader, XtimeSideBar %}
 
 {% block title %}Xtime时光网：让电影遇见生活{% endblock %}
 {% block head %}
     {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
+
     <style>
         .header {
             height: 110px;
         }
-
-        .review-header {
-            height: 300px;
-            background-color: #0b2e13;
-        }
-
-        .movie-img {
-            width: 100%;
-            height: 270px;
-            object-fit: cover;
-            overflow: hidden;
-        }
-
-        .movie-img::before {
-            /* before伪元素，不懂，没有效果*/
-            z-index: -1; /*-1 可以当背景*/
-            -webkit-filter: blur(3px);
-            filter: blur(20px);
-        }
-
-        .card-img-overlay {
-            /* 给图片上方的文字div再加一层渐变遮罩，重要在于渐变，上层稍微黑一点，中间透明，下面再稍微黑一点 */
-            background: linear-gradient(to bottom, rgba(0, 0, 0, .5) 0%, rgba(255, 255, 255, 0) 30%, rgba(0, 0, 0, 0.4) 100%);
-        }
-
-        /* 以下是右侧固定menu的css */
-        .newXtimebar {
-            position: fixed;
-            top: 50%;
-            right: 10px;
-            width: 3em;
-            margin-top: -2.5em;
-            z-index: 100;
-        }
-
-        .newXtimebar div {
-            width: 100%;
-        }
-
-        .newXtimebar i {
-            width: 100%;
-            height: 32px;
-            margin: 0 auto;
-            line-height: 50px;
-            text-align: center;
-            color: #000;
-            font-weight: 700;
-            display: inline-block;
-            vertical-align: middle;
-            cursor: pointer;
-            position: relative;
-            zoom: 1;
-            opacity: .8;
-        }
-
-        .newXtimebar i:hover {
-            color: #5cb85c;
-        }
-
-        .newXtimebar p {
-            display: inline-block;
-            text-align: center;
-            padding: 5px 0 0;
-            width: 100%;
-            font-size: 14px;
-            color: #8798af;
-            letter-spacing: 0;
-        }
-
-        .newXtimebar .bi {
-            color: #5c636a;
-            font-size: 27px;
-        }
-
-        .newXtimebar .checked {
-            color: #5cb85c;
-        }
-
-
     </style>
 {% endblock %}
 
 {% block content %}
-    <!-- 影评header部分 -->
-    <div class="container-fluid review-header">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card mb-4 bg-dark text-white">
-                    {# 网上定制一张780 * 270的背景图#}
-                    {#                    <img class="card-img" src="//placeimg.com/780/270/any" alt="Card image">#}
-                    <div class="card-img-overlay" style="padding: 0">
-                        <h1 class="mt-3 pb-3 mb-4 border-bottom">
-                            {{ review.title }}
-                        </h1>
-                        <p class="card-text">
-                            <span>{{ review.modify_time.strftime('%Y-%m-%d %H:%M:%S') }}</span>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <span><a href="#">{{ user.username }}</a>发布的影评</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4 bg-dark text-white">
-                    <img class="card-img movie-img" src={{ movie.image }} alt={{ movie.name }}>
-                    <div class="card-img-overlay">
-                        <h5 class="card-title"><a
-                                href={{ url_for('main.get_movie', movie_id=movie.id) }}>{{ movie.name }}</a>({{ movie.release_date.year }})
-                        </h5>
-                        <p class="card-text">类型：{% for tag in movie.tags %}{{ tag.name }}/{% endfor %}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- 影评页面header部分 -->
+    {{ ReviewHeader(review, movie, user) }}
+
     <div class="container">
         <div class="col-md-9 left">
             <div class="content">
@@ -140,99 +35,85 @@
         </div>
 
         <!-- 点赞/点踩/收藏/留言/分享/返回顶部 -->
-        <div class="newXtimebar">
-            <div class="praise" title="点赞">
-                <i class="bi bi-hand-thumbs-up-fill" id="praise"></i>
-                <p>{{ review.fav_nums }}</p></div>
-            <div class="step" title="点踩">
-                <i class="bi bi-hand-thumbs-down-fill" id="step"></i>
-                <p>{{ review.dislike_nums }}</p></div>
-            <div class="collectbar" title="收藏" style="display: none"><i></i>
-                <p>{{ review.collect_nums }}</p></div>
-            <div class="messagebar" title="留言"><i class="bi bi-chat-dots-fill"></i>
-                <p>{{ review.comments|length }}</p></div>
-            <div class="share" title="分享"><i class="bi bi-share-fill"></i>
-                <p></p></div>
-            <div class="topbar" title="返回顶部"><i class="bi bi-chevron-up back-to-top"></i>
-                <p></p></div>
-        </div>
+        {{ XtimeSideBar(review) }}
     </div>
 {% endblock %}
 
 
 {% block scripts %}
     {{ super() }}
-    {#    <script type="text/javascript" src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>#}
-    {#    {{ ckeditor.config(name='body') }}#}
-
     <script type="text/javascript">
-        $(function () {
-            // var $win = $(window);
-            var $backToTop = $('.back-to-top');
-            // 当用户点击按钮时，通过动画效果返回头部
-            $backToTop.click(function () {
-                $('html, body').animate({
-                    scrollTop: 0
-                }, 400);
-            });
-        });
+        {#window.csrfTokenName = "{{ craft.config.csrfTokenName|e('js') }}";#}
+        {#window.csrfTokenValue = "{{ craft.request.csrfToken|e('js') }}";#}
 
-        // 点赞checked = True / 取消点赞checked = False
-        function PariseReview(checked) {
-            var csrftoken="{{ csrf_token() }}";
-            $.ajax({
-                url: '/review/{{ review.id }}/praise',
-                data: {
-                    review_id: {{ review.id }},
-                    checked: checked
-                },
-                type: 'POST',
-                // 解决POST方式导致的CSRF问题
-                beforeSend: function (xhr, settings) {
-                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
-                    }
-                },
-                success: function (res) {
-                    var result = JSON.parse(res);
-                    if (result.status == 'OK') {
-                        if (checked === true) {
-                            toastr['success']('点赞成功~');
-                        } else {
-                            toastr['success']('取消点赞成功~');
-                        }
-                        var $p_praise = $('.praise').find('p').first();
-                        $p_praise.text(result.fav_nums);
-                    } else {
-                        alert(result.status);
-                    }
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            })
-        };
-
-        $(function () {
-            var $praise = $('#praise');
-            $praise.click(function () {
-                if ($praise.hasClass('checked')) {
-                    // 取消点赞
-                    PariseReview(false)
-                    $praise.removeClass('checked')
-                    console.log('取消点赞')
-
-                } else {
-                    // 点赞
-                    PariseReview(true)
-                    $praise.addClass('checked')
-                    console.log('点赞')
-
-                }
-            });
-        });
-
+        {#$(function () {#}
+        {#    // var $win = $(window);#}
+        {#    var $backToTop = $('.back-to-top');#}
+        {#    // 当用户点击按钮时，通过动画效果返回头部#}
+        {#    $backToTop.click(function () {#}
+        {#        $('html, body').animate({#}
+        {#            scrollTop: 0#}
+        {#        }, 400);#}
+        {#    });#}
+        {# });#}
+        {##}
+        {#// 点赞checked = True / 取消点赞checked = False#}
+        {#function PariseReview(checked) {#}
+        {#    var csrftoken = "{{ csrf_token() }}";#}
+        {#    $.ajax({#}
+        {#        url: '/review/{{ review.id }}/praise',#}
+        {#        data: {#}
+        {#            review_id: {{ review.id }},#}
+        {#            checked: checked#}
+        {#        },#}
+        {#        type: 'POST',#}
+        {#        // 解决POST方式导致的CSRF问题#}
+        {#        beforeSend: function (xhr, settings) {#}
+        {#            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {#}
+        {#                xhr.setRequestHeader("X-CSRFToken", csrftoken)#}
+        {#            }#}
+        {#        },#}
+        {#        success: function (res) {#}
+        {#            var result = JSON.parse(res);#}
+        {#            if (result.status == 'OK') {#}
+        {#                if (checked === true) {#}
+        {#                    toastr['success']('点赞成功~');#}
+        {#                } else {#}
+        {#                    toastr['success']('取消点赞成功~');#}
+        {#                }#}
+        {#                var $p_praise = $('.praise').find('p').first();#}
+        {#                $p_praise.text(result.fav_nums);#}
+        {#            } else {#}
+        {#                alert(result.status);#}
+        {#            }#}
+        {#        },#}
+        {#        error: function (error) {#}
+        {#            console.log(error);#}
+        {#        }#}
+        {#    })#}
+        {# };#}
+        {##}
+        {#$(function () {#}
+        {#    var $praise = $('#praise');#}
+        {#    $praise.click(function () {#}
+        {#        if ($praise.hasClass('checked')) {#}
+        {#            // 取消点赞#}
+        {#            PariseReview(false)#}
+        {#            $praise.removeClass('checked')#}
+        {#            console.log('取消点赞')#}
+        {##}
+        {#        } else {#}
+        {#            // 点赞#}
+        {#            PariseReview(true)#}
+        {#            $praise.addClass('checked')#}
+        {#            console.log('点赞')#}
+        {##}
+        {#        }#}
+        {#    });#}
+        {# });#}
     </script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/review.js') }}"></script>
 {% endblock %}
 
 

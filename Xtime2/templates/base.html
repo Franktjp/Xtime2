@@ -12,6 +12,11 @@
         <meta name="description" content="Welcome to Xtime!">
         <meta name="author" content="Franktjp">
 
+        <!-- 注：解决ajax post方式的csrf_token问题 -->
+        <!-- 参考：[CSRF 保护](http://docs.jinkan.org/docs/flask-wtf/csrf.html) -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
         <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-4.0.0-dist/css/bootstrap.min.css') }}"
               type="text/css">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" type="text/css">

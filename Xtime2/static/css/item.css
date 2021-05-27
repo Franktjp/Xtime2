@@ -1,4 +1,9 @@
-.card {
+/*
+    以下应该与index.html中影线热映部分的影片缩略图的宏movieList有关，
+    所有的宏均定义在macros.html文件中
+*/
+
+.movie-card {
     /*width: 172px;*/
     width: 170px;
     border: 0;
@@ -7,7 +12,7 @@
     transition: all 0.4s ease-out;
 }
 
-.card > a {
+.movie-card > a {
     display: block;
     width: 170px;
     height: 256px;
@@ -15,13 +20,13 @@
     position: relative;
 }
 
-.card .card-img-top {
+.movie-card .card-img-top {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.card .card-title {
+.movie-card .card-title {
     font-size: 18px;
     padding-top: 10px;
     font-weight: 400;
@@ -34,7 +39,7 @@
     text-overflow: ellipsis;
 }
 
-.card .icohot, .card .iconew {
+.movie-card .icohot, .movie-card .iconew {
     background: url(../img/index24.png) -64px -103px no-repeat;
     width: 40px;
     height: 40px;
@@ -43,11 +48,11 @@
     top: 0;
 }
 
-.card .icohot {
+.movie-card .icohot {
     background-position: -113px -103px;
 }
 
-.card:hover {
+.movie-card:hover {
     transform: scale(1.08);
     transition: all 0.4s ease-out;
 }
@@ -62,9 +67,94 @@
     font-size: 13px;
 }
 
-.card .moviegrade {
+.movie-card .moviegrade {
     position: absolute;
     bottom: 0;
     right: 0;
 }
 
+
+/*
+    以下是右侧固定侧边栏XtimeSideBar(点赞/点踩/收藏/留言/分享/返回顶部)菜单的css
+    所有的宏均定义在macros.html文件中
+ */
+.newXtimebar {
+    position: fixed;
+    top: 50%;
+    right: 10px;
+    width: 3em;
+    margin-top: -2.5em;
+    z-index: 100;
+}
+
+.newXtimebar div {
+    width: 100%;
+}
+
+.newXtimebar i {
+    width: 100%;
+    height: 32px;
+    margin: 0 auto;
+    line-height: 50px;
+    text-align: center;
+    color: #000;
+    font-weight: 700;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    position: relative;
+    zoom: 1;
+    opacity: .8;
+}
+
+.newXtimebar i:hover {
+    color: #5cb85c;
+}
+
+.newXtimebar p {
+    display: inline-block;
+    text-align: center;
+    padding: 5px 0 0;
+    width: 100%;
+    font-size: 14px;
+    color: #8798af;
+    letter-spacing: 0;
+}
+
+.newXtimebar .bi {
+    color: #5c636a;
+    font-size: 27px;
+}
+
+.newXtimebar .checked {
+    color: #5cb85c;
+}
+
+
+/*
+    以下与ReviewHeader的宏（影评页面的header部分）有关
+    所有的宏均定义在macros.html文件中
+*/
+.review-header {
+    height: 300px;
+    background-color: #0b2e13;
+}
+
+.review-header .movie-img {
+    width: 100%;
+    height: 270px;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.review-header .movie-img::before {
+    /* before伪元素，不懂，没有效果*/
+    z-index: -1; /*-1 可以当背景*/
+    -webkit-filter: blur(3px);
+    filter: blur(20px);
+}
+
+.review-header .card-img-overlay {
+    /* 给图片上方的文字div再加一层渐变遮罩，重要在于渐变，上层稍微黑一点，中间透明，下面再稍微黑一点 */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, .5) 0%, rgba(255, 255, 255, 0) 30%, rgba(0, 0, 0, 0.4) 100%);
+}
