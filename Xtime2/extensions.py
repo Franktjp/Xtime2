@@ -29,6 +29,12 @@ avatars = Avatars() # 用户头像相关
 def load_user(user_id):
     # 创建用户加载回调函数，接受用户 ID 作为参数
     # 用 ID 作为 User 模型的主键查询对应的用户
+    """
+    Flask-Login 提供了一个 current_user 变量，注册这个函数的目的是，当程序运行后，如果\
+    用户已登录， current_user 变量的值会是当前用户的用户模型类记录。
+    :param user_id:
+    :return:
+    """
     from Xtime2.models import User
     user = User.query.get(int(user_id))
     return user  # 返回用户对象

@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 <!--导入宏-->
-{% from 'macros.html' import movieList, reviewList %}
+{% from 'macros.html' import movieList, reviewList, longReviewList %}
 
 {#{% block title %}Xtime时光网：让电影遇见生活{% endblock %}#}
 
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/movie.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
     <style>
         .header {
             height: 150px;
@@ -190,15 +191,15 @@
 {% endblock %}
 
 {% block content %}
-    {#    主要布局参考：[Bootstrap 4.1.1 Snippet by jeevan123456](https://bootsnipp.com/snippets/7ojar)#}
-    <section class="py-5 bg-1 text-white">
+    {# 主要布局参考：[Bootstrap 4.1.1 Snippet by jeevan123456](https://bootsnipp.com/snippets/7ojar)#}
+    <section class="py-5 bg-1 text-white movie-page">
         <div class="container py-5">
             <div class="row">
                 <div class="col-md-7">
                     <h1>{{ movie.name }}({{ movie.release_date.year }})</h1>
                     <br>
                     <h5>{{ movie.mins }}分钟 -
-                        {% for tag in movie.tags %}{{ tag.name }}/{% endfor %}
+                        {% for tag in movie.tags[:-1] %}{{ tag.name }}/{% endfor %}{{ movie.tags[-1].name }}
                         - {{ movie.release_date }}上映
                     </h5>
                     <nav class="main-navigation">
@@ -210,19 +211,25 @@
                         {# 参考：["导航栏Navbar Hover Effects"](https://bootsnipp.com/snippets/qNM9N)#}
                         {# 参考：["导航栏navbar with animation"](https://bootsnipp.com/snippets/xrDxz)#}
                         <ul class="nav-list">
-                            <li class="nav-list-item">
+                            <li class="nav-list-item movie-index">
                                 <a href={{ url_for('main.get_movie', movie_id=movie.id) }}
                                            class="nav-link">影片首页</a>
                             </li>
-                            <li class="nav-list-item">
-                                <a href={{ url_for('main.get_movie', movie_id=movie.id) }}
-                                           class="nav-link">n 条影评</a>
+                            <li class="nav-list-item movie-review">
+                                <a href={{ url_for('main.get_movie_review', movie_id=movie.id) }}
+                                           class="nav-link">
+                                    {% if movie.reviews|length > 999 %}
+                                        999+
+                                    {% else %}
+                                        {{ movie.reviews|length }}
+                                    {% endif %}
+                                    条影评</a>
                             </li>
-                            <li class="nav-list-item">
+                            <li class="nav-list-item movie-desc">
                                 <a href={{ url_for('main.get_movie_desc', movie_id=movie.id) }}
                                            class="nav-link">剧情</a>
                             </li>
-                            <li class="nav-list-item">
+                            <li class="nav-list-item movie-more">
                                 <a href={{ url_for('main.get_movie_more', movie_id=movie.id) }}
                                            class="nav-link">更多资料</a>
                             </li>
@@ -306,25 +313,26 @@
                                             </textarea>
                                         </div>
                                         <p>
-                                            <a href={{ url_for('main.create_review', movie_id=movie.id) }}><i class="el-icon-edit">写长影评</i></a>
-{#                                            <a href={{ url_for('main.get_movie', movie_id=movie.id) }}#}
-{#                                           class="nav-link">影片首页</a>#}
+                                            <a href={{ url_for('main.create_review', movie_id=movie.id) }}><i
+                                                    class="el-icon-edit">写长影评</i></a>
+                                            {#                                            <a href={{ url_for('main.get_movie', movie_id=movie.id) }}#}
+                                            {#                                           class="nav-link">影片首页</a>#}
                                             <span><button class="btn">发表</button></span>
                                         </p>
                                     </div>
-{#                                    <div class="content" style="display: none;">#}
-{#                                        <p class="el-tooltip commentContent" aria-describedby="el-tooltip-5069"#}
-{#                                           tabindex="0">#}
-{#                                            <i class="icoDot"></i>#}
-{#                                            <span></span>#}
-{#                                            <span class="delte" style="display: none;">删除</span>#}
-{#                                        </p>#}
-{#                                        <p class="w_comment">#}
-{#                                            <a href="#">#}
-{#                                                <i class="el-icon-edit">写长影评</i>#}
-{#                                            </a>#}
-{#                                        </p>#}
-{#                                    </div>#}
+                                    {#                                    <div class="content" style="display: none;">#}
+                                    {#                                        <p class="el-tooltip commentContent" aria-describedby="el-tooltip-5069"#}
+                                    {#                                           tabindex="0">#}
+                                    {#                                            <i class="icoDot"></i>#}
+                                    {#                                            <span></span>#}
+                                    {#                                            <span class="delte" style="display: none;">删除</span>#}
+                                    {#                                        </p>#}
+                                    {#                                        <p class="w_comment">#}
+                                    {#                                            <a href="#">#}
+                                    {#                                                <i class="el-icon-edit">写长影评</i>#}
+                                    {#                                            </a>#}
+                                    {#                                        </p>#}
+                                    {#                                    </div>#}
                                 </div>
                             </div>
                         </div>

@@ -16,6 +16,10 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    登录用户使用 Flask-Login 提供的 login_user() 函数实现，需要传入用户模型类对象作为参数。
+    :return:
+    """
     # 用户已登录直接回到首页
     if current_user.is_authenticated:
         flash('用户已登录', 'info')
@@ -41,6 +45,10 @@ def login():
 @auth_bp.route('/logout')
 @login_required
 def logout():
+    """
+    和登录相对，登出操作则需要调用 logout_user() 函数
+    :return:
+    """
     logout_user()
     flash('成功登出！', 'info')
     return redirect(url_for('auth.login'))

@@ -1,10 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'main/_movie.html' %}
 
-</body>
-</html>
+{% block title %}{{ movie.name }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <style>
+        h4 {
+            display: inline-block
+        }
+
+        .movie-page .nav-list li.nav-list-item.movie-review {
+            background-color: #2F96B4;
+        }
+
+    </style>
+{% endblock %}
+
+{% block movie_content %}
+    <div class="container content">
+        <div class="movieTitle">
+            {{ movie.name }}
+        </div>
+        <!-- 显示该影片n个长影评缩略图 -->
+        {{ longReviewList(movie.reviews, 5) }}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/review.js') }}"></script>
+    <script>
+        var $praise = $('.praise'); // 获得所有的点赞按钮所在的<i>标签
+
+        // 实现影评缩略图点赞功能
+        $praise.click(function (e) {
+            // 关键字this应该是指向调用该方法的对象，比如第2各li中的i对象
+            // parent() 方法返回被选元素的直接父元素
+            var review_id = $(this).parent().parent().parent().parent().data('review_id');
+            var fav_nums = $(this).next().text();
+
+            if ($(this).hasClass('checked')) {
+                // 取消点赞
+                PariseReview(review_id, false);
+                $(this).removeClass('checked');
+                $(this).css('color', '#292b2c');
+                $(this).next().text(parseInt(fav_nums) - 1);
+            } else {
+                // 点赞
+                PariseReview(review_id, true);
+                $(this).addClass('checked');
+                $(this).css('color', '#5cb85c');
+                $(this).next().text(parseInt(fav_nums) + 1);
+            }
+        });
+
+
+    </script>
+{% endblock %}
+

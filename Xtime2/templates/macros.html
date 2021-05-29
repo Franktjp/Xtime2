@@ -11,7 +11,7 @@
             <i class="moviegrade">{{ rating }}</i>
         </a>
         <h5 class="card-title">
-            <a href={{ id }} target="_blank">{{ title }}</a>
+            <a href="{{ url_for('main.get_movie', movie_id=id) }}" target="_blank">{{ title }}</a>
         </h5>
     </div>
 {% endmacro %}
@@ -102,11 +102,72 @@
 
 
 
-{# longReviewCard的宏：一个长影评的缩略图  #}
-{% macro longReviewCard(thumbnail,title,rating, author,id="#") %}
-
+{# longReviewCard的宏：一个长影评的缩略图(显示某部影片的所有影评用到)  #}
+{% macro longReviewCard(review, index) %}
+    <li data-review_id={{ review.id }}>
+        {% if index <= 2 %}
+            <div class="sign">
+                <span>TOP</span>
+                <h3>{{ index }}</h3>
+            </div>
+        {% else %}
+            <div class="sign not-hot">
+                <span></span>
+                <h3></h3>
+            </div>
+        {% endif %}
+        <div class="matter">
+            <div class="flex">
+                <div class="reviewContent">
+                    <p class="title"><a
+                            href={{ url_for('main.show_review', review_id=review.id) }}>{{ review.title }}</a>
+                    </p>
+                    <div class="content">
+                        {% if review.content|length < 150 %}
+                            {{ review.content|striptags|safe }}
+                        {% else %}
+                            {{ review.content|striptags|safe|truncate(150, true) }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="user">
+                    <a href="#" target="_blank">
+                        <img src={{ review.user.photo|string }}>
+                    </a>
+                    <div class="userInfo">
+                        <p>
+                            <a target="_blank" href="#">
+                                {{ review.user.username }}
+                            </a>
+                        </p>
+                        <p class="time">{{ review.modify_time.date() }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tools">
+                            <span>
+                                <i class="bi bi-hand-thumbs-up-fill praise"></i>
+                                <span>{{ review.fav_nums }}</span>
+                            </span>
+                <a href="#">
+                    <i class="reviewIcon bi bi-chat-dots-fill"></i>
+                    <span>119</span>
+                </a>
+            </div>
+        </div>
+    </li>
 {% endmacro %}
 
+
+{# longReviewList的宏：一个长影评的缩略图(显示某部影片的所有影评用到)  #}
+{% macro longReviewList(reviews, show_num) %}
+    <ul class="reviewList">
+        <!-- python会确定列表长度和show_num的大小，取一个小的 -->
+        {% for review in reviews[:show_num] %}
+            {{ longReviewCard(review, loop.index) }}
+        {% endfor %}
+    </ul>
+{% endmacro %}
 
 
 {# ReviewHeader的宏：影评页面的header部分  #}
@@ -137,7 +198,8 @@
                         <h5 class="card-title"><a
                                 href={{ url_for('main.get_movie', movie_id=movie.id) }}>{{ movie.name }}</a>({{ movie.release_date.year }})
                         </h5>
-                        <p class="card-text">类型：{% for tag in movie.tags %}{{ tag.name }}/{% endfor %}</p>
+                        <p class="card-text">类型：{% for tag in movie.tags[:-1] %}{{ tag.name }}
+                            /{% endfor %}{{ movie.tags[-1].name }}</p>
                     </div>
                 </div>
             </div>
@@ -146,11 +208,83 @@
 {% endmacro %}
 
 
+{# CommentCard的宏：评论 #}
+{% macro CommentCard(comment) %}
+    <!-- 参考：[Bootstrap 4 User Rating Form / Comment Form](https://bootsnipp.com/snippets/M5obX) -->
+    <div class="card">
+        <div class="card-body">
+            <!-- 一级评论 -->
+            <div class="row">
+                <div class="col-md-2">
+                    <img src="{{ comment.user.photo }}" style="width: 100px;height: 100px;border-radius: 50%"
+                         class="img img-rounded img-fluid"/>
+                </div>
+                <div class="col-md-10">
+                    <p>
+                        <a class="float-left" href="#"><strong>{{ comment.user.username }}</strong></a>
+                    </p>
+                    <div class="clearfix"></div>
+                    <p>{{ comment.content }}</p>
+                    <p>
+                        <a class="float-right btn btn-outline-primary ml-2">
+                            <i class="bi bi-reply"></i>回复</a>
+                        <a class="float-right btn text-white btn-danger">
+                            <i class="bi bi-hand-thumbs-up-fill">{{ comment.fav_nums }}喜欢</i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+            <!-- 二级评论 -->
+            {#            <div class="card card-inner">#}
+            {#                <div class="card-body">#}
+            {#                    <div class="row">#}
+            {#                        <div class="col-md-2">#}
+            {#                            <img src="{{ url_for('static', filename='img/default/default_icon.jpg') }}"#}
+            {#                                 class="img img-rounded img-fluid"/>#}
+            {#                        </div>#}
+            {#                        <div class="col-md-10">#}
+            {#                            <p>#}
+            {#                                <a href="#"><strong>哟西</strong></a></p>#}
+            {#                            <p>阿甘，会有的二个阿甘吗.......</p>#}
+            {#                            <p>#}
+            {#                                <a class="float-right btn btn-outline-primary ml-2"> <i#}
+            {#                                        class="bi bi-reply"></i> 回复</a>#}
+            {#                                <a class="float-right btn text-white btn-danger">#}
+            {#                                    <i class="bi bi-hand-thumbs-up-fill">喜欢</i>#}
+            {#                                </a>#}
+            {#                            </p>#}
+            {#                        </div>#}
+            {#                    </div>#}
+            {#                </div>#}
+            {#            </div>#}
+        </div>
+    </div>
+{% endmacro %}
+
+
+{# CommentList的宏：某个影评的所有评论 #}
+{% macro CommentList(comments, show_num) %}
+    <ul class="commentList">
+        {% if not show_num %}
+            {% for comment in comments %}
+                {{ CommentCard(comment) }}
+            {% endfor %}
+        {% else %}
+            {% for comment in comments[:show_num] %}
+                {{ CommentCard(comment) }}
+            {% endfor %}
+        {% endif %}
+    </ul>
+{% endmacro %}
+
+
+
+
 {# 固定侧边栏(点赞/点踩/收藏/留言/分享/返回顶部) #}
 {% macro XtimeSideBar(review) %}
-    <div class="newXtimebar">
+    <div class="newXtimebar" data-review_id={{ review.id|string }}>
         <div class="praise" title="点赞">
-            <i class="bi bi-hand-thumbs-up-fill" id="praise" data-value={{ review.id|string }}></i>
+            <i class="bi bi-hand-thumbs-up-fill" id="praise"></i>
             <p>{{ review.fav_nums }}</p></div>
         <div class="step" title="点踩">
             <i class="bi bi-hand-thumbs-down-fill" id="step"></i>

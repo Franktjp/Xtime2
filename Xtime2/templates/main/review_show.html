@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {#{% from 'bootstrap/form.html' import render_form %}#}
-{% from 'macros.html' import ReviewHeader, XtimeSideBar %}
+{% from 'macros.html' import ReviewHeader, XtimeSideBar, CommentList %}
 
 {% block title %}Xtime时光网：让电影遇见生活{% endblock %}
 {% block head %}
@@ -11,21 +11,140 @@
         .header {
             height: 110px;
         }
+
+        .card-inner {
+            margin-left: 4em;
+        }
+
+
     </style>
 {% endblock %}
 
 {% block content %}
     <!-- 影评页面header部分 -->
-    {{ ReviewHeader(review, movie, user) }}
+    {{ ReviewHeader(review, review.movie, review.user) }}
 
     <div class="container">
         <div class="col-md-9 left">
+            <!-- 影评内容 -->
             <div class="content">
                 {{ review.content|safe }}
             </div>
 
             <!-- 评论部分 -->
-            <div class="comments"></div>
+            <div class="comments">
+                <!-- 评论标题 -->
+                <div class="comments-title">
+                    <h3>全部评论</h3>
+                    <span>{{ review.comments|length }}</span>
+                </div>
+                <!-- 选择评论排序方式 -->
+                <div class="choose-type">
+                    <span class="active">最新</span>
+                    <span>最热</span>
+                </div>
+
+                <!-- 评论表单 -->
+                <!-- 参考：[bootstrap 4 - social network post and comment card with form](https://bootsnipp.com/snippets/rNEdR) -->
+                <section class="comment-box card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab"
+                                   aria-controls="posts" aria-selected="true">评论</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {{ form.csrf_token() }}
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="posts" role="tabpanel"
+                                     aria-labelledby="posts-tab">
+                                    <div class="form-group">
+                                        <textarea class="form-control" id="message" rows="4" name="content"
+                                                  maxlength="400" placeholder="留下你想说的" style="resize: none"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <button type="submit" name="submit" class="btn btn-primary">确定</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- 评论block -->
+                <div class="comments-block">
+                    <!-- 评论列表 -->
+                    {{ CommentList(review.comments) }}
+
+
+{#                    <!-- 参考：[Bootstrap 4 User Rating Form / Comment Form](https://bootsnipp.com/snippets/M5obX) -->#}
+{#                    <div>#}
+{#                        <ul class="commentList">#}
+{#                            <li>#}
+{#                                <div class="card">#}
+{#                                    <div class="card-body">#}
+{#                                        <!-- 一级评论 -->#}
+{#                                        <div class="row">#}
+{#                                            <div class="col-md-2">#}
+{#                                                <img src="{{ url_for('static', filename='img/default/default_icon2.jpg') }}"#}
+{#                                                     class="img img-rounded img-fluid"/>#}
+{#                                            </div>#}
+{#                                            <div class="col-md-10">#}
+{#                                                <p>#}
+{#                                                    <a class="float-left" href="#"><strong>一个人流浪</strong></a>#}
+{#                                                </p>#}
+{#                                                <div class="clearfix"></div>#}
+{#                                                <p>#}
+{#                                                    片子的主题无关乎成功，而是美国社会各种矛盾的历史性和解。像丹中尉的主要作用是和越南女人结婚，代表美越和解。珍妮的主要作用是和阿甘在政治地标（国会山还是哪里）相拥，代表反对越战的嬉皮士与政府、国家机器的和解</p>#}
+{#                                                <p>#}
+{#                                                    <a class="float-right btn btn-outline-primary ml-2">#}
+{#                                                        <i class="bi bi-reply"></i>回复</a>#}
+{#                                                    <a class="float-right btn text-white btn-danger">#}
+{#                                                        <i class="bi bi-hand-thumbs-up-fill">喜欢</i>#}
+{#                                                    </a>#}
+{#                                                </p>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                        <!-- 二级评论 -->#}
+{#                                        <div class="card card-inner">#}
+{#                                            <div class="card-body">#}
+{#                                                <div class="row">#}
+{#                                                    <div class="col-md-2">#}
+{#                                                        <img src="{{ url_for('static', filename='img/default/default_icon.jpg') }}"#}
+{#                                                             class="img img-rounded img-fluid"/>#}
+{#                                                    </div>#}
+{#                                                    <div class="col-md-10">#}
+{#                                                        <p>#}
+{#                                                            <a href="#"><strong>哟西</strong></a></p>#}
+{#                                                        <p>阿甘，会有的二个阿甘吗.......</p>#}
+{#                                                        <p>#}
+{#                                                            <a class="float-right btn btn-outline-primary ml-2"> <i#}
+{#                                                                    class="bi bi-reply"></i> 回复</a>#}
+{#                                                            <a class="float-right btn text-white btn-danger">#}
+{#                                                                <i class="bi bi-hand-thumbs-up-fill">喜欢</i>#}
+{#                                                            </a>#}
+{#                                                        </p>#}
+{#                                                    </div>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </li>#}
+{#                        </ul>#}
+{#                    </div>#}
+
+
+
+                    <!-- 分页工具 -->
+                    <div class="pagination-block"></div>
+                </div>
+                <!--  -->
+
+            </div>
 
         </div>
         <!-- 该片热门影评 -->
@@ -42,77 +161,6 @@
 
 {% block scripts %}
     {{ super() }}
-    <script type="text/javascript">
-        {#window.csrfTokenName = "{{ craft.config.csrfTokenName|e('js') }}";#}
-        {#window.csrfTokenValue = "{{ craft.request.csrfToken|e('js') }}";#}
-
-        {#$(function () {#}
-        {#    // var $win = $(window);#}
-        {#    var $backToTop = $('.back-to-top');#}
-        {#    // 当用户点击按钮时，通过动画效果返回头部#}
-        {#    $backToTop.click(function () {#}
-        {#        $('html, body').animate({#}
-        {#            scrollTop: 0#}
-        {#        }, 400);#}
-        {#    });#}
-        {# });#}
-        {##}
-        {#// 点赞checked = True / 取消点赞checked = False#}
-        {#function PariseReview(checked) {#}
-        {#    var csrftoken = "{{ csrf_token() }}";#}
-        {#    $.ajax({#}
-        {#        url: '/review/{{ review.id }}/praise',#}
-        {#        data: {#}
-        {#            review_id: {{ review.id }},#}
-        {#            checked: checked#}
-        {#        },#}
-        {#        type: 'POST',#}
-        {#        // 解决POST方式导致的CSRF问题#}
-        {#        beforeSend: function (xhr, settings) {#}
-        {#            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {#}
-        {#                xhr.setRequestHeader("X-CSRFToken", csrftoken)#}
-        {#            }#}
-        {#        },#}
-        {#        success: function (res) {#}
-        {#            var result = JSON.parse(res);#}
-        {#            if (result.status == 'OK') {#}
-        {#                if (checked === true) {#}
-        {#                    toastr['success']('点赞成功~');#}
-        {#                } else {#}
-        {#                    toastr['success']('取消点赞成功~');#}
-        {#                }#}
-        {#                var $p_praise = $('.praise').find('p').first();#}
-        {#                $p_praise.text(result.fav_nums);#}
-        {#            } else {#}
-        {#                alert(result.status);#}
-        {#            }#}
-        {#        },#}
-        {#        error: function (error) {#}
-        {#            console.log(error);#}
-        {#        }#}
-        {#    })#}
-        {# };#}
-        {##}
-        {#$(function () {#}
-        {#    var $praise = $('#praise');#}
-        {#    $praise.click(function () {#}
-        {#        if ($praise.hasClass('checked')) {#}
-        {#            // 取消点赞#}
-        {#            PariseReview(false)#}
-        {#            $praise.removeClass('checked')#}
-        {#            console.log('取消点赞')#}
-        {##}
-        {#        } else {#}
-        {#            // 点赞#}
-        {#            PariseReview(true)#}
-        {#            $praise.addClass('checked')#}
-        {#            console.log('点赞')#}
-        {##}
-        {#        }#}
-        {#    });#}
-        {# });#}
-    </script>
-
     <script type="text/javascript" src="{{ url_for('static', filename='js/review.js') }}"></script>
 {% endblock %}
 

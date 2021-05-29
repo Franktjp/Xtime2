@@ -37,7 +37,7 @@ def create_app(config_name=None):
     register_commands(app)      # 注册自定义shell命令
     register_errors(app)        # 注册错误处理函数
     register_shell_content(app) # ...
-    register_template_content(app)  # 注册模板上下文处理函数
+    register_template_context(app)  # 注册模板上下文处理函数
 
     return app
 
@@ -56,6 +56,16 @@ def register_extensions(app):
     bootstrap.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
+    """
+        如果未登录的用户访问对应的 URL，Flask-Login 会把用户重定向到登录页面，并显示一个错误提示。
+        为了让这个重定向操作正确执行，我们还需要把 login_manager.login_view 的值设为我们程序的登录视图端点（函数名）
+        把代码`login_manager.login_view = 'auth.login'`放到 login_manager 实例定义下面即可
+        
+        提示:如果你需要的话，可以通过设置 login_manager.login_message 来自定义错误提示消息。
+
+        参考：[Flask 第 8 章：用户认证视图保护部分](https://read.helloflask.com/c8-login)
+    """
+    login_manager.login_view = 'auth.login'
     csrf.init_app(app)
     ckeditor.init_app(app)
     mail.init_app(app)
@@ -77,14 +87,29 @@ def register_shell_content(app):
         return dict(db=db)
 
 
-def register_template_content(app):
-    pass
+def register_template_context(app):
+    @app.context_processor
+    # 模板上下文处理函数
+    def make_template_context():
+        user = current_user
+        # if current_user.is_authenticated:
+        #     notification_count = Notification.query.with_parent(current_user).filter_by(is_read=False).count()
+        # else:
+        #     notification_count = None
+        # return dict(notification_count=notification_count)
+        # 注：瞎写的，因为只要函数定义就不能pass，具体见模板上下文处理函数 or https://read.helloflask.com/c6-template2
+        return dict(user=user)
+
 
 
 def register_errors(app):
-    @app.errorhandler(400)
-    def bad_request(e):
-        return render_template('errors/400.html'), 400
+    @app.errorhandler(400)  # 传入要处理的错误代码
+    def bad_request(e):     # 接受异常对象作为参数
+        return render_template('errors/400.html'), 400  # 返回模板和状态码
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('errors/404.html'), 404  # 返回模板和状态码
 
 
 def register_commands(app):
@@ -104,7 +129,9 @@ def register_commands(app):
     @click.option('--password', prompt=True, hide_input=True,
                   confirmation_prompt=True, help='The password used to login.')
     def init(username, password):
-        """Building Bluelog, just for you."""
+        """
+            创建管理员账户，执行`flask init`命令创建账户
+        """
 
         click.echo('Initializing the database...')
         db.create_all()

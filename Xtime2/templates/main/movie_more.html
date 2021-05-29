@@ -9,8 +9,10 @@
             display: inline-block
         }
 
-        .movieTitle {
+        .movie-page .nav-list li.nav-list-item.movie-more {
+            background-color: #2F96B4;
         }
+
     </style>
 {% endblock %}
 
@@ -19,23 +21,13 @@
         <div class="movieTitle">
             {{ movie.name }}
         </div>
-        {#        <div class="desc">#}
-        {#            <h4>剧情</h4>#}
-        {#            <p>#}
-        {#                {% if movie.desc|length == 0 %}#}
-        {#                    剧情不存在！#}
-        {#                {% else %}#}
-        {#                    {{ movie.desc }}#}
-        {#                {% endif %}#}
-        {#            </p>#}
-        {#        </div>#}
         <div class="desc">
             <h4 class="col-md-6">中文名:</h4>
             {{ movie.name }}
         </div>
         <div class="desc">
             <h4 class="col-md-6">片长:</h4>
-            {{ movie.mins }}
+            {{ movie.mins }} 分钟
         </div>
         <div class="desc">
             <h4 class="col-md-6">上映日期:</h4>
@@ -43,16 +35,15 @@
         </div>
         <div class="desc">
             <h4 class="col-md-6">评分:</h4>
-            {{ movie.score }}
+            {{ movie.score }} 分
         </div>
         <div class="desc">
             <h4 class="col-md-6">标签:</h4>
-            {% for tag in tags %}
+            {% for tag in movie.tags[:-1] %}
                 {{ tag.name }} -
             {% endfor %}
+            {{ movie.tags[-1].name }}
         </div>
         <div class="desc"><h4 class="col-md-4">封面图</h4><img src="{{ movie.image }}"></div>
-
-
     </div>
 {% endblock %}

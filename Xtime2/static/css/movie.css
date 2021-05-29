@@ -251,7 +251,7 @@ a.nav-link {
 }
 
 
-/*movie 剧情 / 更多*/
+/* movie 剧情/更多 */
 .content {
     min-height: 1200px;
     width: 1200px;
@@ -273,13 +273,19 @@ a.nav-link {
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
-
 }
 
 .desc {
     padding: 0 100px 0 120px;
     /*font-size: 14px;*/
     line-height: 2em;
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.reviewList {
+    padding: 0 100px 0 120px;
+    /*line-height: 2em;*/
     width: 1200px;
     margin: 0 auto;
 }

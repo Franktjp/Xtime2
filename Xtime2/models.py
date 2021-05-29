@@ -47,7 +47,7 @@ class User(db.Model, UserMixin):
     signature = db.Column(db.String(50))  # 个性签名(比如知乎的一句话介绍)
     introduction = db.Column(db.Text)  # 个人介绍
     # 用户头像，存储路径(表单用FileField字段，实现参考https://blog.csdn.net/liuredflash/article/details/79646678)
-    photo = db.Column(db.String(64), default='default_icon.jpg')
+    photo = db.Column(db.String(64), default='/static/img/default/head.gif')
     privilege = db.Column(db.Integer, default=2)  # 用户权限(普通用户2，普通管理员1，root管理员0)
 
     avatar_s = db.Column(db.String(64))
@@ -59,6 +59,12 @@ class User(db.Model, UserMixin):
     reviews = db.relationship(
         'Review',
         backref='user'
+    )
+
+    # 该用户撰写的评论(不需要级联删除)
+    comments = db.relationship(
+        'Comment',
+        back_populates='user'
     )
 
     def set_password(self, password):
@@ -92,7 +98,7 @@ class Tag(db.Model):
         影片标签：标签的名称不允许重复，因此name值将unique参数设为True
         举例：剧情、喜剧、短片...同一个影片可以有多个标签
     """
-    __tablename__ = 'tag'
+    __tablename__ = 'tag'   # 通过该属性自定义表名，若不指定表的实际名称是模型类的小写形式
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
 
@@ -181,6 +187,9 @@ class Comment(db.Model):
     dislike_nums = db.Column(db.Integer, default=0)
     # checked字段是为了防止垃圾评论和不当评论，当用户发表评论后，评论默认显示在影评中，管理员有权限将其撤回，则该字段为False
     checked = db.Column(db.Boolean, default=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', back_populates='comments')
 
     review_id = db.Column(db.Integer, db.ForeignKey('review.id', ondelete='CASCADE'))
     review = db.relationship('Review', back_populates='comments')

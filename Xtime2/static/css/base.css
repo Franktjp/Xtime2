@@ -12,6 +12,11 @@ body {
     font-weight: lighter;
 }
 
+ol, ul {
+    list-style: none;
+}
+
+
 .header {
     /* 设置堆叠顺序，让导航栏成为最上层盒子(数值越大，盒子越靠上) */
     z-index: 5;
