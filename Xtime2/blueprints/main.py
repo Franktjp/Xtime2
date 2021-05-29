@@ -36,12 +36,10 @@ def index():
     return render_template('main/index.html', cards=movies_dict)
 
 
-
-
 @main_bp.route('/movie/<int:movie_id>', methods=['GET', 'POST'])
 def get_movie(movie_id):
     movie = Movie.query.get(movie_id)
-    tags = movie.tags.all() # 获取该影片所有的tag
+    tags = movie.tags.all()  # 获取该影片所有的tag
     # print('tag: ', tags)
     # movie_dict = {
     #     'id': movie.id,
@@ -87,7 +85,7 @@ def get_avatar(filename):
 
 
 @main_bp.route('/movie/<int:movie_id>/create_review', methods=['GET', 'POST'])
-@login_required # 登录保护
+@login_required  # 登录保护
 def create_review(movie_id):
     form = ReviewForm()
     if form.validate_on_submit():
@@ -113,6 +111,7 @@ def create_review(movie_id):
 def show_review(review_id):
     form = CommentForm()
     review = Review.query.get_or_404(review_id)
+    comments = Comment.query.filter_by(review_id=review.id, replied_id=None).order_by(Comment.timestamp.desc())
     # page = request.args.get('page', 1, type=int)
     # per_page = current_app.config['XTIME_COMMENT_PER_PAGE']
     # pagination = Comment.query.with_parent(review).filter_by(checked=True).order_by(Comment.timestamp.asc()).paginate(
@@ -120,9 +119,10 @@ def show_review(review_id):
     # )
     # comments = pagination.items
 
-    comments = Comment.query.filter_by(review_id=review.id).order_by(Comment.timestamp.desc())
-
+    flag = False
+    # 评论
     if form.validate_on_submit():
+        flag = True
         if not current_user.is_authenticated:
             flash('您还未登录', 'warning')
             return redirect(url_for('auth.login'))
@@ -132,12 +132,38 @@ def show_review(review_id):
             review=review,
             user=current_user._get_current_object(),
         )
+    else:
+        # 评论回复
+        replied_id = request.args.get('reply')
+        if replied_id:
+            flag = True
+            comment = Comment(
+                content=request.args.get('content'),
+                review=review,
+                user=current_user._get_current_object(),
+            )
+            replied_comment = Comment.query.get_or_404(replied_id)
+            comment.replied = replied_comment
+
+    # 评论回复或对影评评论成立
+    if flag:
         db.session.add(comment)
         db.session.commit()
         flash('评论成功', 'success')
         return redirect(url_for('.show_review', review_id=review.id))
+    return render_template('main/review_show.html', review=review, form=form, comments=comments)
 
-    return render_template('main/review_show.html', review=review, form=form)
+
+@main_bp.route('/comment/<int:comment_id>', methods=['GET', 'POST'])
+def reply_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    form = CommentForm()
+    content = None
+    if form.validate_on_submit():
+        content = form.content.data
+    return redirect(
+        url_for('main.show_review', review_id=comment.review_id, reply=comment_id, content=content) + '#comment-form'
+    )
 
 
 @main_bp.route('/review/<int:review_id>/praise', methods=['POST'])  # 限定只接受 POST 请求

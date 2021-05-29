@@ -208,70 +208,116 @@
 {% endmacro %}
 
 
+{% macro CommentFormCard(review_id, comment_id, form, rows) %}
+    <div class="card-body comment-form">
+        {% if comment_id %}
+            <!-- 评论回复 -->
+            <form method="post" action="{{ url_for('main.reply_comment', comment_id=comment_id) }}">
+        {% else %}
+            <!-- 发表评论 -->
+            <form method="post" action="{{ url_for('main.show_review', review_id=review_id) }}">
+        {% endif %}
+        {{ form.csrf_token() }}
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="posts" role="tabpanel"
+                 aria-labelledby="posts-tab">
+                <div class="form-group">
+                        <textarea class="form-control" id="message" rows="{{ rows }}" name="content"
+                                  maxlength="400" placeholder="留下你想说的" required
+                                  style="resize: none;min-height: 36px"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="text-right">
+            <button type="submit" name="submit" class="btn btn-primary">确定</button>
+        </div>
+        </form>
+    </div>
+{% endmacro %}
+
+
+{# SecondaryCommentCard的宏：二级评论 #}
+{# 该宏和CommentCard很相似，考虑重构 #}
+{% macro SecondaryCommentCard(comment, form) %}
+    <div class="card card-inner">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-1">
+                    <img src="{{ comment.user.photo }}" style="width: 33px;height: 33px;border-radius: 50%"
+                         class="img img-rounded img-fluid"/>
+                </div>
+                <div class="col-md-11">
+                    <p>
+                        <a href="#"><strong>{{ comment.user.username }}</strong></a>
+                        &nbsp;&nbsp;{{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                    </p>
+                    <p style="margin-bottom: 0em;">{{ comment.content }}</p>
+                    <p>
+                        <a class="float-right btn btn-outline-primary ml-2"> <i
+                                class="bi bi-reply"></i> 回复</a>
+                        <a class="float-right btn text-white btn-danger">
+                            <i class="bi bi-hand-thumbs-up-fill">喜欢</i>
+                        </a>
+                        <!-- 显示回复表单(隐藏功能通过jQuery的hide方法实现) -->
+                        {{ CommentFormCard(comment.review_id, comment.id, form, 1) }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endmacro %}
+
+
 {# CommentCard的宏：评论 #}
-{% macro CommentCard(comment) %}
+{% macro CommentCard(comment, form) %}
     <!-- 参考：[Bootstrap 4 User Rating Form / Comment Form](https://bootsnipp.com/snippets/M5obX) -->
-    <div class="card">
+    <div class="card comment">
         <div class="card-body">
             <!-- 一级评论 -->
             <div class="row">
-                <div class="col-md-2">
-                    <img src="{{ comment.user.photo }}" style="width: 100px;height: 100px;border-radius: 50%"
+                <div class="col-md-1">
+                    <img src="{{ comment.user.photo }}" style="width: 40px;height: 40px;border-radius: 50%"
                          class="img img-rounded img-fluid"/>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-11">
                     <p>
                         <a class="float-left" href="#"><strong>{{ comment.user.username }}</strong></a>
+                        &nbsp;&nbsp;{{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
                     </p>
                     <div class="clearfix"></div>
-                    <p>{{ comment.content }}</p>
+                    <p style="margin-bottom:0em">{{ comment.content }}</p>
                     <p>
-                        <a class="float-right btn btn-outline-primary ml-2">
-                            <i class="bi bi-reply"></i>回复</a>
+                        <button type="button" class="float-right btn btn-outline-primary ml-2" id="reply">
+                            <i class="bi bi-reply"></i>回复
+                        </button>
                         <a class="float-right btn text-white btn-danger">
                             <i class="bi bi-hand-thumbs-up-fill">{{ comment.fav_nums }}喜欢</i>
                         </a>
+                        <!-- 显示回复表单(隐藏功能通过jQuery的hide方法实现) -->
+                        {{ CommentFormCard(comment.review_id, comment.id, form, 1) }}
                     </p>
                 </div>
             </div>
             <!-- 二级评论 -->
-            {#            <div class="card card-inner">#}
-            {#                <div class="card-body">#}
-            {#                    <div class="row">#}
-            {#                        <div class="col-md-2">#}
-            {#                            <img src="{{ url_for('static', filename='img/default/default_icon.jpg') }}"#}
-            {#                                 class="img img-rounded img-fluid"/>#}
-            {#                        </div>#}
-            {#                        <div class="col-md-10">#}
-            {#                            <p>#}
-            {#                                <a href="#"><strong>哟西</strong></a></p>#}
-            {#                            <p>阿甘，会有的二个阿甘吗.......</p>#}
-            {#                            <p>#}
-            {#                                <a class="float-right btn btn-outline-primary ml-2"> <i#}
-            {#                                        class="bi bi-reply"></i> 回复</a>#}
-            {#                                <a class="float-right btn text-white btn-danger">#}
-            {#                                    <i class="bi bi-hand-thumbs-up-fill">喜欢</i>#}
-            {#                                </a>#}
-            {#                            </p>#}
-            {#                        </div>#}
-            {#                    </div>#}
-            {#                </div>#}
-            {#            </div>#}
+            {% for reply in comment.replies %}
+                {{ SecondaryCommentCard(reply, form) }}
+            {% endfor %}
         </div>
     </div>
 {% endmacro %}
 
 
 {# CommentList的宏：某个影评的所有评论 #}
-{% macro CommentList(comments, show_num) %}
+{% macro CommentList(comments, form, show_num) %}
     <ul class="commentList">
         {% if not show_num %}
             {% for comment in comments %}
-                {{ CommentCard(comment) }}
+                {{ CommentCard(comment, form) }}
             {% endfor %}
         {% else %}
             {% for comment in comments[:show_num] %}
-                {{ CommentCard(comment) }}
+                {{ CommentCard(comment, form) }}
             {% endfor %}
         {% endif %}
     </ul>

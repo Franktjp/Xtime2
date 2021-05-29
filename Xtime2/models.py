@@ -191,7 +191,7 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', back_populates='comments')
 
-    review_id = db.Column(db.Integer, db.ForeignKey('review.id', ondelete='CASCADE'))
+    review_id = db.Column(db.Integer, db.ForeignKey('review.id', ondelete='CASCADE'))   # 回复的是哪一条评论
     review = db.relationship('Review', back_populates='comments')
 
     # 添加replied_id字段，通过db.ForeignKey()设置一个外键指向自身的id字段
