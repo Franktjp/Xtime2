@@ -12,6 +12,8 @@ from flask_wtf import CSRFProtect
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
 from flask_avatars import Avatars
+from flask_admin import Admin
+from flask_babelex import Babel
 
 bootstrap = Bootstrap()
 db = SQLAlchemy()
@@ -22,7 +24,9 @@ mail = Mail()
 moment = Moment()
 toolbar = DebugToolbarExtension()
 migrate = Migrate()
-avatars = Avatars() # 用户头像相关
+avatars = Avatars()     # 用户头像相关
+admin = Admin(name='Xtime 后台管理系统')      # 后台管理
+babel = Babel()         # 国际化
 
 
 @login_manager.user_loader

@@ -111,7 +111,7 @@ def create_review(movie_id):
 def show_review(review_id):
     form = CommentForm()
     review = Review.query.get_or_404(review_id)
-    comments = Comment.query.filter_by(review_id=review.id, replied_id=None).order_by(Comment.timestamp.desc())
+    comments = Comment.query.filter_by(review_id=review.id, replied_id=None).order_by(Comment.timestamp.desc()) # 发表时间逆序，后发表的先显示
     # page = request.args.get('page', 1, type=int)
     # per_page = current_app.config['XTIME_COMMENT_PER_PAGE']
     # pagination = Comment.query.with_parent(review).filter_by(checked=True).order_by(Comment.timestamp.asc()).paginate(

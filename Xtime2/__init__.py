@@ -10,16 +10,18 @@ from flask_login import current_user
 from flask_sqlalchemy import get_debug_queries
 from flask_wtf.csrf import CSRFError
 
-# from Xtime2.blueprints.auth import admin_bp
 from Xtime2.blueprints.auth import auth_bp
 from Xtime2.blueprints.main import main_bp
 from Xtime2.blueprints.user import user_bp
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.fileadmin import FileAdmin
 from Xtime2.extensions import bootstrap, db, login_manager, csrf, ckeditor, \
-    mail, moment, toolbar, migrate, avatars
-from Xtime2.models import Admin, User
+    mail, moment, toolbar, migrate, avatars, admin, babel
+from Xtime2.models import Admin, Comment, Movie, movie_tag, Review, Tag, Topic, User
 from Xtime2.settings import config
 
-basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))       # {str} '....\\Pycharm\\Xtime2'
+staticdir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'static'))
 
 
 def create_app(config_name=None):
@@ -31,12 +33,12 @@ def create_app(config_name=None):
     app = Flask('Xtime2')
     app.config.from_object(config[config_name]) # 从python对象中获取环境变量
 
-    register_logging(app)       # 注册日志处理器
-    register_extensions(app)    # 注册扩展(扩展初始化)
-    register_blueprints(app)    # 注册蓝本
-    register_commands(app)      # 注册自定义shell命令
-    register_errors(app)        # 注册错误处理函数
-    register_shell_content(app) # ...
+    register_logging(app)           # 注册日志处理器
+    register_extensions(app)        # 注册扩展(扩展初始化)
+    register_blueprints(app)        # 注册蓝本
+    register_commands(app)          # 注册自定义shell命令
+    register_errors(app)            # 注册错误处理函数
+    register_shell_content(app)     # ...
     register_template_context(app)  # 注册模板上下文处理函数
 
     return app
@@ -73,12 +75,28 @@ def register_extensions(app):
     toolbar.init_app(app)
     migrate.init_app(app)
     avatars.init_app(app)
+    admin.init_app(app)
+    babel.init_app(app)
+
+    # 以下为Xtime 后台管理系统增加数据库模型视图
+    admin.add_view(ModelView(Admin, db.session, endpoint='admin_admin', name='管理员'))
+    admin.add_view(ModelView(Comment, db.session, endpoint='comment_admin', name='评论'))
+    admin.add_view(ModelView(Movie, db.session, endpoint='movie_admin', name='影片'))
+    # admin.add_view(ModelView(movie_tag, db.session, endpoint='movie_tag_admin', name=''))  # error: AttributeError: 'Table' object has no attribute '__name__'
+    admin.add_view(ModelView(Review, db.session, endpoint='review_admin', name='影评'))
+    admin.add_view(ModelView(Tag, db.session, endpoint='tag_admin', name='标签'))
+    admin.add_view(ModelView(Topic, db.session, endpoint='topic_admin', name='话题'))
+    admin.add_view(ModelView(User, db.session, endpoint='user_admin', name='用户'))
+    # admin.add_view(FileAdmin(os.path.join(basedir, 'uploads'), '/static/', name='文件'))
+    # 设置文件管理文件夹为static，但是这么做好像很危险。仅作尝试，应用程序文件管理应该更加专业
+    admin.add_view(FileAdmin(staticdir, '/static/', name='文件'))
 
 
 def register_blueprints(app):
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(user_bp, url_prefix='/user')
+    # app.register_blueprint(admin_bp)
 
 
 def register_shell_content(app):
@@ -99,7 +117,6 @@ def register_template_context(app):
         # return dict(notification_count=notification_count)
         # 注：瞎写的，因为只要函数定义就不能pass，具体见模板上下文处理函数 or https://read.helloflask.com/c6-template2
         return dict(user=user)
-
 
 
 def register_errors(app):

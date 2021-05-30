@@ -1,0 +1,19 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+<div class="row">
+  <div class="span10 offset1">
+    <h1>欢迎来到Xtime后台管理系统</h1>
+    <p class="lead">
+      Xtime后台管理系统可以方便的进行数据的删除/添加/修改
+    </p>
+    <p>
+      进阶功能包括但不限于管理员登录、定制数据库模型视图、上传图片。
+    </p>
+    <p>
+        <strong>点击导航栏按钮进行数据管理</strong>
+    </p>
+    <a class="btn btn-primary" href="/"><i class="icon-arrow-left icon-white"></i> 回到网站首页</a>
+  </div>
+</div>
+{% endblock body %}
