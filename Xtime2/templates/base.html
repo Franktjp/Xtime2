@@ -50,7 +50,7 @@
                     <li><a href="#">社区</a></li>
                     <li>
                         <form class="form-inline my-2 my-lg-0" method="get" action="{{ url_for('main.search') }}">
-                            <input class="form-control mr-sm-2" type="text" placeholder="搜索电影、影人、文章" name="keyword">
+                            <input class="form-control mr-sm-2" type="text" placeholder="搜索电影、影人、文章" name="keyword" required>
                             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
                         </form>
                     </li>
@@ -182,6 +182,8 @@
             src="{{ url_for('static', filename='bootstrap-4.0.0-dist/js/popper.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
     {#    <script type="text/javascript" src="{{ url_for('static', filename='js/toastr.js') }}"></script>#}
+    {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
+
 {% endblock %}
 </body>
 

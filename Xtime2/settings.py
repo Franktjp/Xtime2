@@ -27,6 +27,7 @@ class BaseConfig(object):
 
     # 用Flask-BabelEx做国际化，显示中文
     BABEL_DEFAULT_LOCALE = 'zh_CN'      # 应用默认语言，不设置的话即为en
+    # BABEL_DEFAULT_TIMEZONE = 'UTC+8'  # 不需要设置时区，UTC即可，显示时不同时区渲染为不同的输出
 
     # MAIL_SERVER = os.getenv('MAIL_SERVER')
     # MAIL_PORT = 465

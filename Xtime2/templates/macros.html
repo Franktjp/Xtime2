@@ -282,8 +282,15 @@
                 </div>
                 <div class="col-md-11">
                     <p>
-                        <a class="float-left" href="#"><strong>{{ comment.user.username }}</strong></a>
-                        &nbsp;&nbsp;{{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                        <a class="float-left" href="#"><strong>{{ comment.user.username }}</strong></a>&nbsp;
+{#                        &nbsp;&nbsp;{{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}#}
+                        <!-- 解决在macro中UndefinedError: 'moment' is undefined的问题 -->
+{#                        <!-- 通过使用context导入宏 such as{% from "your_macro_file" import render_file_thumbnail with context %} -->#}
+{#                        {{ moment(comment.timestamp).fromNow() }}#}
+{#                        {{ moment(comment.timestamp).format('L') }}#}
+{#                        {{ moment(comment.timestamp).format('LL') }}#}
+{#                        {{ moment(comment.timestamp).format('LLL') }}#}
+                        {{ moment(comment.timestamp).format('LLLL') }}
                     </p>
                     <div class="clearfix"></div>
                     <p style="margin-bottom:0em">{{ comment.content }}</p>
