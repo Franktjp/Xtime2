@@ -179,7 +179,9 @@ class CommentForm(FlaskForm):
     submit = SubmitField()
 
 
-
+class SearchForm(FlaskForm):
+    search = StringField(u'搜索', validators=[DataRequired()])
+    # submit = SubmitField()
 
 
 

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% from 'macros.html' import movieList, longReviewList %}
+
+{% block title %}Xtime时光网：让电影遇见生活{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <style>
+        .header {
+            height: 110px;
+        }
+
+        {# css / js 参考[flask系列---搜索功能的实现与页面倒计时跳转（十五）](https://blog.csdn.net/JENREY/article/details/85629008?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_baidulandingword-0&spm=1001.2101.3001.4242)#}
+
+        .search .informs {
+            width: 560px;
+            margin: 20px;
+            padding: 5px;
+            border: 1px solid cornflowerblue;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .search span.key-message {
+            color: #225599;
+        }
+
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
+
+{% endblock %}
+
+{% block content %}
+    <div class="container search">
+        {% if result.result_movie or result.result_review %}
+            <!-- 参考：[bootstrap4.0](https://getbootstrap.com/docs/4.0/components/navs/#tabs) -->
+            <!-- 两个nav-item -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="movie-tab" data-toggle="tab" href="#movie" role="tab"
+                       aria-controls="movie" aria-selected="true">电影</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="review-tab" data-toggle="tab" href="#review" role="tab"
+                       aria-controls="review" aria-selected="false">影评</a>
+                </li>
+            </ul>
+            <br>
+            <!-- tab内容 -->
+            <div class="tab-content" id="myTabContent">
+                <!-- movie -->
+                <div class="tab-pane fade show active" id="movie" role="tabpanel" aria-labelledby="review-tab">
+                    <div class="row">
+                        {% if result.result_movie %}
+                            <!-- 影线热映缩略图 -->
+                            {{ movieList("电影", result.result_movie, 6, 1) }}
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- review -->
+                <div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="movie-tab">
+                    <div class="row">
+                        {% if result.result_review %}
+                            <!-- 显示该影片n个长影评缩略图 -->
+                            {{ longReviewList(result.result_review, 5) }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="informs">
+                <h4>提示信息</h4>
+                <p>
+                    <span class="key-message">未找到相关结果</span>，
+                    <span id="timer">5</span>秒后将自动跳转回首页。
+                </p>
+                <div class="jump-button">
+                    <button type="submit" class="btn btn-default pull-right"
+                            onclick="location='{{ url_for('main.index') }}'">
+                        立即跳转
+                    </button>
+                </div>
+            </div>
+            <script type="text/javascript">
+                // 页面倒计时跳转
+                function timetojump(second, jumpurl) {
+                    var timer = document.getElementById('timer');
+                    timer.innerHTML = second;
+                    if (--second > 0) {
+                        setTimeout("timetojump(" + second + ",'" + jumpurl + "')", 1000);
+                    } else {
+                        location.href = jumpurl;
+                    }
+                }
+
+                // 跳转到首页（最好是来源页面）
+                timetojump(5, "{{ url_for('main.index') }}");
+            </script>
+        {% endif %}
+    </div>
+
+{% endblock %}

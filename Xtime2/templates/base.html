@@ -49,9 +49,9 @@
                     <li><a href="#">榜单</a></li>
                     <li><a href="#">社区</a></li>
                     <li>
-                        <form class="form-inline my-2 my-lg-0">
-                            <input class="form-control mr-sm-2" type="text" placeholder="搜索电影、影人、文章">
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        <form class="form-inline my-2 my-lg-0" method="get" action="{{ url_for('main.search') }}">
+                            <input class="form-control mr-sm-2" type="text" placeholder="搜索电影、影人、文章" name="keyword">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
                         </form>
                     </li>
                     {% if current_user.is_authenticated %}

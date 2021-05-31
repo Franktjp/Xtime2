@@ -7,6 +7,7 @@ from Xtime2.extensions import db
 from Xtime2.forms import LoginForm, ReviewForm, CommentForm
 from Xtime2.models import Admin, User, Movie, Tag, Review, Comment
 from Xtime2.utils import redirect_back
+from sqlalchemy import or_, and_
 
 """
     main模块负责index等主要页面功能
@@ -261,3 +262,40 @@ def step_review(review_id):
     except Exception as e:
         print(e)
         return render_template('error.html', error=str(e))
+
+
+@main_bp.route('/search', methods=['GET'])
+def search():
+    # 获取GET数据，注意和获取POST数据的区别
+    keyword = request.args.get('keyword')
+    # 搜索影片
+    result_movie = Movie.query.filter(
+        or_(
+            Movie.name.like("%" + keyword + "%") if keyword is not None else "",
+            Movie.desc.like("%" + keyword + "%") if keyword is not None else ""))\
+        .order_by(Movie.score.asc()).all()
+
+    result_review = Review.query.filter(
+        or_(
+            Review.title.like("%" + keyword + "%") if keyword is not None else "",
+            Review.content.like("%" + keyword + "%") if keyword is not None else "",
+            # Review.comments.like("%" + keyword + "%") if keyword is not None else ""
+        )).order_by(Review.fav_nums.desc()).all()
+
+    # 下面需要重构
+    movies_dict = []
+    for movie in result_movie:
+        m_dict = {
+            'id': movie.id,
+            'thumbnail': movie.image,
+            'title': movie.name,  # 需要注意的是有中文字符的要不要加u
+            'rating': movie.score
+        }
+        movies_dict.append(m_dict)
+
+    result = {
+        "result_movie": movies_dict,
+        "result_review": result_review
+    }
+
+    return render_template('main/search_result.html', keyword=keyword, result=result)
